@@ -1,5 +1,5 @@
-Easy to create a developing environment for LLVM for NEC SX-Aurora VE
-=====================================================================
+Easy to use developing environment for LLVM for NEC SX-Aurora VE
+================================================================
 
 This repository contains Makefile and scripts to create a developing
 environment for LLVM for NEC SX-Aurora VE.
