@@ -1,4 +1,4 @@
-REPO = https://github.com/SXAuroraTSUBASAResearch/
+REPO = git@socsv218.svp.cl.nec.co.jp:ve-llvm/
 BUILD_TYPE = Release
 BUILD_TARGET = "VE;X86"
 TARGET = ve-linux
