@@ -1,0 +1,10 @@
+/llvm
+/ve-csu
+/compiler-rt
+/libunwind
+/libcxxabi
+/libcxx
+/openmp
+/build
+/build-debug
+/install

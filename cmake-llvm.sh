@@ -1,0 +1,7 @@
+#!/bin/sh
+
+$CMAKE -G Ninja \
+  -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
+  -DLLVM_TARGETS_TO_BUILD="$TARGET" \
+  -DCMAKE_INSTALL_PREFIX=$DEST \
+  ../llvm
