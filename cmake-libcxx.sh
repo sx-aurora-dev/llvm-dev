@@ -1,6 +1,12 @@
 #!/bin/sh
 
+case $TARGET in
+*-musl) MUSL="-DLIBCXX_HAS_MUSL_LIBC=True";;
+*)      MUSL="";;
+esac
+
 $CMAKE -G Ninja \
+  $MUSL \
   -DLIBCXX_USE_COMPILER_RT=True \
   -DLIBCXX_TARGET_TRIPLE="$TARGET" \
   -DCMAKE_C_COMPILER=$DEST/bin/clang \
