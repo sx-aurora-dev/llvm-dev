@@ -5,10 +5,10 @@ OPT="$@"
 # Add -u option (update-head-ok) to update current branch
 OPT="-u $OPT"
 
-# Add -f option (force) for the case of shallow fetch
-COOPT=""
+# Need -f option (force) for the case of shallow clone
+FOPT=""
 case "$OPT" in
-*"--depth 1") OPT="-f $OPT"; COOPT="-f";;
+*"--depth 1") FOPT="-f";;
 *) ;;
 esac
 
@@ -18,20 +18,18 @@ x) BRANCH=develop;;
 *) ;;
 esac
 
+function update() {
+  git fetch origin $BRANCH $OPT && \
+    git fetch origin $BRANCH:$BRANCH $OPT $FOPT && \
+    git co $BRANCH $FOPT
+}
+
 TOP=`pwd`
-cd $TOP/llvm
-git fetch origin $BRANCH:$BRANCH $OPT && git co $BRANCH $COOPT
-cd $TOP/llvm/tools/clang
-git fetch origin $BRANCH:$BRANCH $OPT && git co $BRANCH $COOPT
-cd $TOP/llvm/projects/libcxx
-git fetch origin $BRANCH:$BRANCH $OPT && git co $BRANCH $COOPT
-cd $TOP/llvm/projects/libcxxabi
-git fetch origin $BRANCH:$BRANCH $OPT && git co $BRANCH $COOPT
-cd $TOP/llvm/projects/compiler-rt
-git fetch origin $BRANCH:$BRANCH $OPT && git co $BRANCH $COOPT
-cd $TOP/llvm/projects/libunwind
-git fetch origin $BRANCH:$BRANCH $OPT && git co $BRANCH $COOPT
-cd $TOP/llvm/projects/openmp
-git fetch origin $BRANCH:$BRANCH $OPT && git co $BRANCH $COOPT
-cd $TOP/ve-csu
-git fetch origin $BRANCH:$BRANCH $OPT && git co $BRANCH $COOPT
+cd $TOP/llvm; update
+cd $TOP/llvm/tools/clang; update
+cd $TOP/llvm/projects/libcxx; update
+cd $TOP/llvm/projects/libcxxabi; update
+cd $TOP/llvm/projects/compiler-rt; update
+cd $TOP/llvm/projects/libunwind; update
+cd $TOP/llvm/projects/openmp; update
+cd $TOP/ve-csu; update
