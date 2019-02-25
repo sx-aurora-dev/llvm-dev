@@ -28,6 +28,5 @@ $CMAKE -G Ninja \
   ../llvm/projects/libcxx
 
 # Force to remove isntall path from compiled libraries.
-sed -e 's;:/r/home/k-marukawa/llvm/llvm-dev/install/lib;;' \
-  -e 's:-Wl,-rpath,/r/home/k-marukawa/llvm/llvm-dev/libcxx/lib/linux/ve::' \
+sed -e "s;:$DEST/lib;;" \
   -i build.ninja
