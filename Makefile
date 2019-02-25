@@ -44,6 +44,8 @@ build:
 install: build
 	cd build; ${NINJA} ${THREADS} install
 
+installall: install ve-csu compiler-rt libunwind libcxxabi libcxx openmp
+
 build-debug:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${BUILD_TARGET} \
@@ -125,4 +127,4 @@ FORCE:
 
 .PHONY: FORCE shallow deep clean dist clean check-source cmake build install \
 	libraries ve-csu compiler-rt libunwind libcxxabi libcxx openmp \
-	build-debug musl
+	build-debug musl installall
