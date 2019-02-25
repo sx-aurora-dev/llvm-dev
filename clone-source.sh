@@ -1,11 +1,20 @@
 #!/bin/sh
 
-# Get target REPO and remove trailing '/'
-REPO=`echo $1 | sed -e 's:/$::'`
-shift
-
-# Treat the rests of arguments as options
 OPT="$@"
+
+# Check target $REPO and remove trailing '/' from $REPO
+case x"$REPO" in
+x) echo Please specify target repository by REPO environment variable
+   exit 1;;
+*) ;;
+esac
+REPO=`echo $REPO | sed -e 's:/$::'`
+
+# Check target $BRANCH and add it to $OPT if it exists
+case x"$BRANCH" in
+x) ;;
+*) OPT="-b $BRANCH $OPT";;
+esac
 
 test -d llvm || git clone $REPO/llvm.git llvm $OPT
 test -d llvm/tools/clang || git clone $REPO/clang.git llvm/tools/clang $OPT

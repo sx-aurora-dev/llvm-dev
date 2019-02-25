@@ -94,12 +94,12 @@ branch.  Please fix such problems by yourself.
     $ make deep-update
 
 You can update your shwllow cloned source code by following commands.
-This simply performs "git fetch origin develop:develop -f -u --depth 1"
-on each subdirectory.  This may destroy your source code if you have
-deep cloned source code,  So, please be careful before use this.
-If you have problems with this command, "git reflog" is your friend.
+This simply performs "git fetch origin $BRANCH:$BRANCH -f -u --depth 1"
+on each subdirectory.  This may overwrite your modified $BRANCH branch.
+Please be careful before use this.  If you have a problem with this
+command, "git reflog" is your friend.
 
-    $ make shallow-update
+    $ make shallow-update BRANCH=github_release_20190212
 
 Run tests
 =========

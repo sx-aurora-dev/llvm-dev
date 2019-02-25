@@ -101,16 +101,16 @@ openmp:
 	cd $@; ${NINJA} ${THREADS} install
 
 shallow:
-	./clone-source.sh ${REPO} -b ${BRANCH} --depth 1
+	REPO=${REPO} BRANCH=${BRANCH} ./clone-source.sh --depth 1
 
 deep:
-	./clone-source.sh ${REPO} -b ${BRANCH}
+	REPO=${REPO} BRANCH=${BRANCH} ./clone-source.sh
 
 shallow-update:
-	./update-source.sh --depth 1
+	BRANCH=${BRANCH} ./update-source.sh --depth 1
 
 deep-update:
-	./update-source.sh
+	BRANCH=${BRANCH} ./update-source.sh
 
 clean:
 	${RM} -rf build compiler-rt libunwind libcxxabi libcxx openmp \
