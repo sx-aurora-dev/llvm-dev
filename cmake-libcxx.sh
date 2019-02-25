@@ -26,3 +26,8 @@ $CMAKE -G Ninja \
   -DCMAKE_CXX_FLAGS="-nostdlib++" \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
   ../llvm/projects/libcxx
+
+# Force to remove isntall path from compiled libraries.
+sed -e 's;:/r/home/k-marukawa/llvm/llvm-dev/install/lib;;' \
+  -e 's:-Wl,-rpath,/r/home/k-marukawa/llvm/llvm-dev/libcxx/lib/linux/ve::' \
+  -i build.ninja
