@@ -19,7 +19,7 @@ x) BRANCH=develop;;
 esac
 
 function update() {
-  git fetch origin $BRANCH $OPT && \
+  git fetch origin $OPT && \
     git fetch origin $BRANCH:$BRANCH $OPT $FOPT && \
     git co $BRANCH $FOPT
 }
