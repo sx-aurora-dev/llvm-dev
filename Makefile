@@ -1,4 +1,5 @@
 REPO = git@socsv218.svp.cl.nec.co.jp:ve-llvm/
+BRANCH = develop
 BUILD_TYPE = Release
 BUILD_TARGET = "VE;X86"
 TARGET = ve-linux
@@ -100,10 +101,16 @@ openmp:
 	cd $@; ${NINJA} ${THREADS} install
 
 shallow:
-	./clone-source.sh ${REPO} --depth 1
+	./clone-source.sh ${REPO} -b ${BRANCH} --depth 1
 
 deep:
-	./clone-source.sh ${REPO}
+	./clone-source.sh ${REPO} -b ${BRANCH}
+
+shallow-update:
+	./update-source.sh --depth 1
+
+deep-update:
+	./update-source.sh
 
 clean:
 	${RM} -rf build compiler-rt libunwind libcxxabi libcxx openmp \
