@@ -41,7 +41,7 @@ or
     $ ls llvm
 
 Compile and install
-====================
+===================
 
 Compile clang/llvm for VE, install clang/llvm under ./install directory,
 cross-compile libraries using installed clang/llvm for VE, and install
@@ -82,6 +82,24 @@ by following command.
 
     $ make clean                   # remove compiled binaries first
     $ make BUILD_TYPE=Debug
+
+Update sources
+==============
+
+You can update your deep cloned source code by following commands.
+This simply performs "git fetch origin develop:develop -u" on each
+subdirectory.  You may see errors if you modified local develop
+branch.  Please fix such problems by yourself.
+
+    $ make deep-update
+
+You can update your shwllow cloned source code by following commands.
+This simply performs "git fetch origin develop:develop -f -u --depth 1"
+on each subdirectory.  This may destroy your source code if you have
+deep cloned source code,  So, please be careful before use this.
+If you have problems with this command, "git reflog" is your friend.
+
+    $ make shallow-update
 
 Run tests
 =========
