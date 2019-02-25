@@ -19,9 +19,13 @@ x) BRANCH=develop;;
 esac
 
 function update() {
+  # 1. Fetch target $BRANCH
+  # 2. Changed local $BRANCH to specify remote $BRANCH
+  # 3. Change current branch to $BRANCH
+  #    (this requires -f if $BRANCH is checkout already)
   git fetch origin $OPT && \
     git fetch origin $BRANCH:$BRANCH $OPT $FOPT && \
-    git co $BRANCH $FOPT
+    git checkout $BRANCH -f
 }
 
 TOP=`pwd`
