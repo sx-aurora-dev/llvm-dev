@@ -26,8 +26,6 @@ function update() {
     git fetch origin $BRANCH:$BRANCH $OPT $FOPT
 
   # 3. Change current branch to $BRANCH if current branch is not dirty
-  #    - -f is required since doing check out from previous $BRANCH to
-  #      updated latest $BRANCH
   id=`git describe --always --abbrev=0 --match "NOT A TAG" --dirty="-dirty"`
   case $id in
   *-dirty)
@@ -36,7 +34,7 @@ function update() {
     exit 1;;
   esac
   git checkout $BRANCH
-  git reset --hard HEAD
+  git reset --hard origin/$BRANCH
 }
 
 TOP=`pwd`
