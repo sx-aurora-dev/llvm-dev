@@ -21,11 +21,18 @@ esac
 function update() {
   # 1. Fetch target $BRANCH
   # 2. Changed local $BRANCH to specify remote $BRANCH
-  # 3. Change current branch to $BRANCH
-  #    (this requires -f if $BRANCH is checkout already)
+  #    - This shows errors if local $BRANCH is not ok to fast-forward rebase
   git fetch origin $OPT && \
-    git fetch origin $BRANCH:$BRANCH $OPT $FOPT && \
-    git checkout $BRANCH -f
+    git fetch origin $BRANCH:$BRANCH $OPT $FOPT
+
+  # 3. Change current branch to $BRANCH if current branch is not dirty
+  #    - -f is required since doing check out from previous $BRANCH to
+  #      updated latest $BRANCH
+  case x`git diff-index --name-only HEAD | tail -n1` in
+  x) git checkout $BRANCH -f;;
+  *) echo Modified source code is in `pwd`.  Please commit or stash them.
+     exit 1;;
+  esac
 }
 
 TOP=`pwd`
