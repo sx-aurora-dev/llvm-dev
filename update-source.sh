@@ -28,11 +28,15 @@ function update() {
   # 3. Change current branch to $BRANCH if current branch is not dirty
   #    - -f is required since doing check out from previous $BRANCH to
   #      updated latest $BRANCH
-  case x`git diff-index --name-only HEAD | tail -n1` in
-  x) git checkout $BRANCH -f;;
-  *) echo Modified source code is in `pwd`.  Please commit or stash them.
-     exit 1;;
+  id=`git describe --always --abbrev=0 --match "NOT A TAG" --dirty="-dirty"`
+  case $id in
+  *-dirty)
+    echo Modified source code is in `pwd`.
+    echo Please commit or stash them.
+    exit 1;;
   esac
+  git checkout $BRANCH
+  git reset --hard HEAD
 }
 
 TOP=`pwd`
