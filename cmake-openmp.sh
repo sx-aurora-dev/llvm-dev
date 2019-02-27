@@ -15,4 +15,4 @@ $CMAKE -G Ninja \
   -DCMAKE_C_FLAGS="" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
   -DLIBOMP_ARCH="$OMPARCH" \
-  ../llvm/projects/openmp
+  ${SRCDIR:=..}/llvm/projects/openmp

@@ -17,4 +17,4 @@ $CMAKE -G Ninja \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_C_FLAGS="-nostdlib" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
-  ../llvm/projects/libunwind
+  ${SRCDIR:=..}/llvm/projects/libunwind
