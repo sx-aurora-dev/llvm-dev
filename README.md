@@ -8,6 +8,13 @@ LLVM requires multiple repositories to combine and LLVM for VE requires
 multiple libraries' cross-compile.  Those are little difficult to handle
 at the beginning.  So, I made this easy to use developing environment.
 
+Quick step:
+
+    $ git clone <this repository>
+    % ./llvm-dev/clone.sh
+    % ./llvm-dev/build-and-install.sh
+
+
 Prerequisites
 =============
 
