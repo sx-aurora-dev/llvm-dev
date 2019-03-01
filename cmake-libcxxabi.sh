@@ -16,9 +16,9 @@ $CMAKE -G Ninja \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_C_FLAGS="-nostdlib++" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
-  -DLLVM_PATH=${SRCDIR:=..}/llvm \
-  -DLLVM_MAIN_SRC_DIR=${SRCDIR:=..}/llvm \
+  -DLLVM_PATH=$SRCDIR/llvm \
+  -DLLVM_MAIN_SRC_DIR=$SRCDIR/llvm \
   -DLLVM_ENABLE_LIBCXX=True \
   -DLIBCXXABI_USE_COMPILER_RT=True \
   -DLIBCXXABI_HAS_NOSTDINCXX_FLAG=True \
-  ${SRCDIR:=..}/llvm/projects/libcxxabi
+  $SRCDIR/llvm/projects/libcxxabi

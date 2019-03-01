@@ -1,13 +1,14 @@
-REPO ?= git@socsv218.svp.cl.nec.co.jp:ve-llvm/
+REPO = git@socsv218.svp.cl.nec.co.jp:ve-llvm/
 BRANCH = develop
-BUILD_TYPE ?= Release
+BUILD_TYPE = Release
 BUILD_TARGET = "VE;X86"
 TARGET = ve-linux
 OMPARCH = ve
-# DEST requires to use an abosolute path
+# DEST and SRCDIR requires to use an abosolute path
 THIS_MAKEFILE_PATH = $(abspath $(lastword $(MAKEFILE_LIST)))
-BUILD_TOP_DIR := $(abspath $(dir ${THIS_MAKEFILE_PATH}))
-DEST ?= ${BUILD_TOP_DIR}/install
+BUILD_TOP_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
+DEST = ${BUILD_TOP_DIR}/install
+SRCDIR = ${BUILD_TOP_DIR}
 # RESDIR requires trailing '/'.
 RESDIR = ${DEST}/lib/clang/9.0.0/
 LIBSUFFIX = /linux/ve/
@@ -18,7 +19,7 @@ OPTFLAGS = -O3 -fno-vectorize -fno-slp-vectorize \
 RM = rm
 CMAKE = cmake3
 NINJA = ninja-build
-THREADS ?= -j8
+THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
 all: check-source cmake install libraries
@@ -103,16 +104,20 @@ openmp:
 	cd $@; ${NINJA} ${THREADS} install
 
 shallow:
-	REPO=${REPO} BRANCH=${BRANCH} ${BUILD_TOP_DIR}/clone-source.sh --depth 1
+	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
+	    ${BUILD_TOP_DIR}/clone-source.sh --depth 1
 
 deep:
-	REPO=${REPO} BRANCH=${BRANCH} ${BUILD_TOP_DIR}/clone-source.sh
+	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
+	    ${BUILD_TOP_DIR}/clone-source.sh
 
 shallow-update:
-	BRANCH=${BRANCH} ./update-source.sh --depth 1
+	BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
+	    ./update-source.sh --depth 1
 
 deep-update:
-	BRANCH=${BRANCH} ./update-source.sh
+	BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
+	    ./update-source.sh
 
 clean:
 	${RM} -rf build compiler-rt libunwind libcxxabi libcxx openmp \

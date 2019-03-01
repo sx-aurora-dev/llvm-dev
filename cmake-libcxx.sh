@@ -20,12 +20,12 @@ $CMAKE -G Ninja \
   -DCMAKE_INSTALL_PREFIX="$RESDIR" \
   -DLIBCXX_LIBDIR_SUFFIX="$LIBSUFFIX" \
   -DLIBCXX_CXX_ABI=libcxxabi \
-  -DLIBCXX_CXX_ABI_INCLUDE_PATHS=${SRCDIR:=..}/llvm/projects/libcxxabi/include \
+  -DLIBCXX_CXX_ABI_INCLUDE_PATHS=$SRCDIR/llvm/projects/libcxxabi/include \
   -DCMAKE_C_FLAGS="-nostdlib++" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_CXX_FLAGS="-nostdlib++" \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
-  ${SRCDIR:=..}/llvm/projects/libcxx
+  $SRCDIR/llvm/projects/libcxx
 
 # Force to remove isntall path from compiled libraries.
 sed -e "s;:$DEST/lib;;" \
