@@ -35,7 +35,8 @@ check-source:
 cmake:
 	mkdir -p build
 	cd build; CMAKE=${CMAKE} DEST=${DEST} TARGET=${BUILD_TARGET} \
-	    BUILD_TYPE=${BUILD_TYPE} ${BUILD_TOP_DIR}/cmake-llvm.sh
+	    BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
+	    ${BUILD_TOP_DIR}/cmake-llvm.sh
 
 build:
 	@test -d build || echo Need to cmake first by \"make cmake\"
@@ -50,7 +51,8 @@ installall: install ve-csu compiler-rt libunwind libcxxabi libcxx openmp
 build-debug:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${BUILD_TARGET} \
-	    BUILD_TYPE=Debug ../cmake-llvm.sh
+	    BUILD_TYPE=Debug SRCDIR=${SRCDIR} \
+	    ${BUILD_TOP_DIR}/cmake-llvm.sh
 	cd $@; ${NINJA} ${THREADS}
 
 check-llvm: build
@@ -67,7 +69,7 @@ compiler-rt:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
+	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
 	    ${BUILD_TOP_DIR}/cmake-compiler-rt.sh
 	cd $@; ${NINJA} ${THREADS} install
 
@@ -75,7 +77,7 @@ libunwind:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
+	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
 	    ${BUILD_TOP_DIR}/cmake-libunwind.sh
 	cd $@; ${NINJA} ${THREADS} install
 
@@ -83,7 +85,7 @@ libcxxabi:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
+	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
 	    ${BUILD_TOP_DIR}/cmake-libcxxabi.sh
 	cd $@; ${NINJA} ${THREADS} install
 
@@ -91,7 +93,7 @@ libcxx:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
+	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
 	    ${BUILD_TOP_DIR}/cmake-libcxx.sh
 	cd $@; ${NINJA} ${THREADS} install
 
@@ -100,7 +102,7 @@ openmp:
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} OMPARCH=${OMPARCH} \
-	    ${BUILD_TOP_DIR}/cmake-openmp.sh
+	    SRCDIR=${SRCDIR} ${BUILD_TOP_DIR}/cmake-openmp.sh
 	cd $@; ${NINJA} ${THREADS} install
 
 shallow:
