@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 REPO=$1
 shift
@@ -9,12 +9,9 @@ fi
 
 SRCDIR=$(readlink -f ${SRCDIR:=src})
 
+LLVM_DEV_DIR=$(dirname $(readlink -f $0))
+
 echo REPO=${REPO}
 echo SRCDIR=$SRCDIR
 
-export REPO
-export SRCDIR
-
-mkdir -p ${SRCDIR}
-
-make -f llvm-dev/Makefile shallow
+make -f $LLVM_DEV_DIR/Makefile shallow REPO=$REPO SRCDIR=$SRCDIR

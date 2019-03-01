@@ -20,4 +20,4 @@ $CMAKE -G Ninja \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_C_FLAGS="-nostdlib" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
-  ${SRCDIR:=..}/llvm/projects/compiler-rt 
+  $SRCDIR/llvm/projects/compiler-rt 

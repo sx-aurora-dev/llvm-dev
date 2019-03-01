@@ -37,12 +37,11 @@ function update() {
   git reset --hard origin/$BRANCH
 }
 
-TOP=`pwd`
-cd $TOP/llvm; update
-cd $TOP/llvm/tools/clang; update
-cd $TOP/llvm/projects/libcxx; update
-cd $TOP/llvm/projects/libcxxabi; update
-cd $TOP/llvm/projects/compiler-rt; update
-cd $TOP/llvm/projects/libunwind; update
-cd $TOP/llvm/projects/openmp; update
-cd $TOP/ve-csu; update
+cd $SRCDIR/llvm; update
+cd $SRCDIR/llvm/tools/clang; update
+cd $SRCDIR/llvm/projects/libcxx; update
+cd $SRCDIR/llvm/projects/libcxxabi; update
+cd $SRCDIR/llvm/projects/compiler-rt; update
+cd $SRCDIR/llvm/projects/libunwind; update
+cd $SRCDIR/llvm/projects/openmp; update
+cd $SRCDIR/ve-csu; update

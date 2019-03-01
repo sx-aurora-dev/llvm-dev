@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 set -e
 
@@ -19,45 +19,46 @@ echo BUILD_TYPE=${BUILD_TYPE:=Release}
 echo BUILD_DIR=${BUILD_DIR}
 echo SRCDIR=${SRCDIR}
 
-export DEST
-export SRCDIR
-export BUILD_TYPE
-
 mkdir -p ${BUILD_DIR}
+
+function call_make() {
+        make -f ${LLVM_DEV_DIR}/Makefile \
+            BUILD_TYPE=$BUILD_TYPE DEST=$DEST SRCDIR=$SRCDIR "$@"
+}
 
 function build_llvm() {
         cd ${BUILD_DIR}
-        make -f ${LLVM_DEV_DIR}/Makefile cmake install
+        call_make cmake install
 }
 
 function build_ve_csu() {
         cd ${SRCDIR}
-        make -f ${LLVM_DEV_DIR}/Makefile ve-csu
+        call_make ve-csu
 }
 
 function build_compiler_rt() {
         cd ${BUILD_DIR}
-        make -f ${LLVM_DEV_DIR}/Makefile compiler-rt
+        call_make compiler-rt
 }
 
 function build_libunwind() {
         cd ${BUILD_DIR}
-        make -f ${LLVM_DEV_DIR}/Makefile libunwind
+        call_make libunwind
 }
 
 function build_libcxxabi() {
         cd ${BUILD_DIR}
-        make -f ${LLVM_DEV_DIR}/Makefile libcxxabi
+        call_make libcxxabi
 }
 
 function build_libcxx() {
         cd ${BUILD_DIR}
-        make -f ${LLVM_DEV_DIR}/Makefile libcxx
+        call_make libcxx
 }
 
 function build_openmp() {
         cd ${BUILD_DIR}
-        make -f ${LLVM_DEV_DIR}/Makefile openmp
+        call_make openmp
 }
 
 (build_llvm)
