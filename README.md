@@ -20,6 +20,7 @@ Prerequisites
 
   - cmake (cmake3 in RHEL7)
   - ninja (ninja-build in RHEL7)
+  - gcc 5.1 or above (devtoolset-8 in RHEL7)
 
 Repositories
 ============
@@ -55,17 +56,19 @@ cross-compile libraries using installed clang/llvm for VE, and install
 generated cross-compiled libraries under ./install directory by following
 command.
 
+    $ scl enable devtoolset-8 bash   # enable latest gcc on RHEL7
     $ make
 
 You can install everything to your favorite place by following command.
 
-    $ make DEST=~/.local      # need to use an absolute path
+    $ make DEST=~/.local             # need to use an absolute path
 
 Compile without installation
 ============================
 
 You can compile clang/llvm without installation by following command.
 
+    $ scl enable devtoolset-8 bash   # enable latest gcc on RHEL7
     $ make build
 
 Clang/llvm requires installed header files, so please install them
@@ -79,6 +82,7 @@ Debug mode compile
 Compile clang/llvm in debug mode by following command.  Compiled
 clang/llvm are left in independent directory named build-debug.
 
+    $ scl enable devtoolset-8 bash   # enable latest gcc on RHEL7
     $ make build-debug
 
 Debug mode everything
@@ -87,7 +91,8 @@ Debug mode everything
 It is also possible to compile and install everything under debug mode
 by following command.
 
-    $ make clean                   # remove compiled binaries first
+    $ scl enable devtoolset-8 bash   # enable latest gcc on RHEL7
+    $ make clean                     # remove compiled binaries first
     $ make BUILD_TYPE=Debug
 
 Update sources
@@ -101,10 +106,9 @@ branch.  Please fix such problems by yourself.
     $ make deep-update
 
 You can update your shwllow cloned source code by following commands.
-This simply performs "git fetch origin $BRANCH:$BRANCH -f -u --depth 1"
-on each subdirectory.  This may overwrite your modified $BRANCH branch.
-Please be careful before use this.  If you have a problem with this
-command, "git reflog" is your friend.
+This may overwrite your modified $BRANCH branch.  Please be careful
+before use this.  If you have a problem with this command,
+"git reflog" is your friend.
 
     $ make shallow-update BRANCH=github_release_20190212
 
