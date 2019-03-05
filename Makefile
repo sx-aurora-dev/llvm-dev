@@ -124,11 +124,11 @@ deep-update:
 clean:
 	${RM} -rf build compiler-rt libunwind libcxxabi libcxx openmp \
 	    build-debug
-	cd ve-csu; make clean
+	-cd ve-csu && make clean
 
 distclean: clean
 	${RM} -rf llvm ve-csu
-	${RM} -rf ${INSTALL}
+	${RM} -rf ${DEST}
 
 FORCE:
 
