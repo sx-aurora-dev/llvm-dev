@@ -28,7 +28,7 @@ We maintain multiple repositories, one for public and one for internal.
 We prepare multiple branches for multiple repositoris, so please clone
 correct one.
 
-    $ git clone git@socsv218.svp.cl.nec.co.jp:ve-llvm/llvm-dev.git -b gitea
+    $ git clone <this repository>
 
 Prepare source codes
 ====================

@@ -1,12 +1,14 @@
-REPO = git@socsv218.svp.cl.nec.co.jp:ve-llvm/
+THIS_MAKEFILE_PATH = $(abspath $(lastword $(MAKEFILE_LIST)))
+BUILD_TOP_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
+
+# Retrieve all sources from this repo's parent
+REPO = $(dir $(shell cd ${BUILD_TOP_DIR}; git config remote.origin.url))
 BRANCH = develop
 BUILD_TYPE = Release
 BUILD_TARGET = "VE;X86"
 TARGET = ve-linux
 OMPARCH = ve
 # DEST and SRCDIR requires to use an abosolute path
-THIS_MAKEFILE_PATH = $(abspath $(lastword $(MAKEFILE_LIST)))
-BUILD_TOP_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
 DEST = ${BUILD_TOP_DIR}/install
 SRCDIR = ${BUILD_TOP_DIR}
 # RESDIR requires trailing '/'.
