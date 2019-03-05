@@ -38,7 +38,7 @@ cmake:
 	mkdir -p build
 	cd build; CMAKE=${CMAKE} DEST=${DEST} TARGET=${BUILD_TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
-	    ${BUILD_TOP_DIR}/cmake-llvm.sh
+	    ${SRCDIR}/scripts/cmake-llvm.sh
 
 build:
 	@test -d build || echo Need to cmake first by \"make cmake\"
@@ -54,7 +54,7 @@ build-debug:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${BUILD_TARGET} \
 	    BUILD_TYPE=Debug SRCDIR=${SRCDIR} \
-	    ${BUILD_TOP_DIR}/cmake-llvm.sh
+	    ${SRCDIR}/scripts/cmake-llvm.sh
 	cd $@; ${NINJA} ${THREADS}
 
 check-llvm: build
@@ -72,7 +72,7 @@ compiler-rt:
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
-	    ${BUILD_TOP_DIR}/cmake-compiler-rt.sh
+	    ${SRCDIR}/scripts/cmake-compiler-rt.sh
 	cd $@; ${NINJA} ${THREADS} install
 
 libunwind:
@@ -80,7 +80,7 @@ libunwind:
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
-	    ${BUILD_TOP_DIR}/cmake-libunwind.sh
+	    ${SRCDIR}/scripts/cmake-libunwind.sh
 	cd $@; ${NINJA} ${THREADS} install
 
 libcxxabi:
@@ -88,7 +88,7 @@ libcxxabi:
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
-	    ${BUILD_TOP_DIR}/cmake-libcxxabi.sh
+	    ${SRCDIR}/scripts/cmake-libcxxabi.sh
 	cd $@; ${NINJA} ${THREADS} install
 
 libcxx:
@@ -96,7 +96,7 @@ libcxx:
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
-	    ${BUILD_TOP_DIR}/cmake-libcxx.sh
+	    ${SRCDIR}/scripts/cmake-libcxx.sh
 	cd $@; ${NINJA} ${THREADS} install
 
 openmp:
@@ -104,24 +104,24 @@ openmp:
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} OMPARCH=${OMPARCH} \
-	    SRCDIR=${SRCDIR} ${BUILD_TOP_DIR}/cmake-openmp.sh
+	    SRCDIR=${SRCDIR} ${SRCDIR}/scripts/cmake-openmp.sh
 	cd $@; ${NINJA} ${THREADS} install
 
 shallow:
 	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${BUILD_TOP_DIR}/clone-source.sh --depth 1
+	    ${SRCDIR}/scripts/clone-source.sh --depth 1
 
 deep:
 	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${BUILD_TOP_DIR}/clone-source.sh
+	    ${SRCDIR}/scripts/clone-source.sh
 
 shallow-update:
 	BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ./update-source.sh --depth 1
+	    ${SRCDIR}/scripts/update-source.sh --depth 1
 
 deep-update:
 	BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ./update-source.sh
+	    ${SRCDIR}/scripts/update-source.sh
 
 clean:
 	${RM} -rf build compiler-rt libunwind libcxxabi libcxx openmp \
