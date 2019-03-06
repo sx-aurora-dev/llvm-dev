@@ -10,9 +10,18 @@ at the beginning.  So, I made this easy to use developing environment.
 
 Quick step:
 
-    $ git clone <this repository>
+    % git clone <this repository>
     % ./llvm-dev/clone.sh
-    % ./llvm-dev/build-and-install.sh
+    % scl enable devtoolset-8 bash
+    % ./llvm-dev/build-and-install.sh <install directory>
+
+Source code is downloaded in 'src' direcotry, then llvm is build in `build`
+directory and installed to `<install direcotry>`.
+
+You can change the directories and build type as below.
+
+    % SRCDIR=src2 ./llvm-dev/clone.ch
+    % SRCDIR=src2 BUILD_DIR=build-debug BUILD_TYPE=Debug ./llvm-dev/build-and-install.sh ~/.local-debug
 
 
 Prerequisites
