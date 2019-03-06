@@ -15,7 +15,7 @@ Quick step:
     % scl enable devtoolset-8 bash
     % ./llvm-dev/build-and-install.sh <install directory>
 
-Source code is downloaded in 'src' direcotry, then llvm is build in `build`
+Source code is downloaded into `src` direcotry, then llvm is build in `build`
 directory and installed to `<install direcotry>`.
 
 You can change the directories and build type as below.
