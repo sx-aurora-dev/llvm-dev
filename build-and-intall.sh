@@ -18,12 +18,13 @@ LLVM_DEV_DIR=$(dirname $(readlink -f $0))
 echo BUILD_TYPE=${BUILD_TYPE:=Release}
 echo BUILD_DIR=${BUILD_DIR}
 echo SRCDIR=${SRCDIR}
+JOBS=${JOBS:-j8}
 
 mkdir -p ${BUILD_DIR}
 
 function call_make() {
         make -f ${LLVM_DEV_DIR}/Makefile \
-            BUILD_TYPE=$BUILD_TYPE DEST=$DEST SRCDIR=$SRCDIR "$@"
+            BUILD_TYPE=$BUILD_TYPE DEST=$DEST SRCDIR=$SRCDIR THREAD=$JOBS "$@"
 }
 
 function build_llvm() {
