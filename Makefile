@@ -93,6 +93,9 @@ libcxxabi:
 	    ${SRCDIR}/scripts/cmake-libcxxabi.sh
 	cd $@; ${NINJA} ${THREADS} install
 
+check-libcxxabi: libcxxabi
+	cd libcxxabi; ${NINJA} ${THREADS} check-libcxxabi
+
 libcxx:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \

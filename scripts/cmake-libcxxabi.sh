@@ -22,3 +22,11 @@ $CMAKE -G Ninja \
   -DLIBCXXABI_USE_COMPILER_RT=True \
   -DLIBCXXABI_HAS_NOSTDINCXX_FLAG=True \
   $SRCDIR/llvm/projects/libcxxabi
+
+# Modify lit.site.cfg to pass installed libraries' path
+sed -e '1i config.test_linker_flags        = "-L'$RESDIR'/lib/linux/ve -Wl,-rpath,'$RESDIR'/lib/linux/ve"' \
+    -i test/lit.site.cfg
+
+# Add -j1 to lit.py
+sed -e 's:lit.py:lit.py -j1:' \
+    -i build.ninja
