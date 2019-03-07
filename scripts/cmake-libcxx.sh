@@ -19,6 +19,7 @@ $CMAKE -G Ninja \
   -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
   -DCMAKE_INSTALL_PREFIX="$RESDIR" \
   -DLIBCXX_LIBDIR_SUFFIX="$LIBSUFFIX" \
+  -DLIBCXXABI_USE_LLVM_UNWINDER=True \
   -DLIBCXX_CXX_ABI=libcxxabi \
   -DLIBCXX_CXX_ABI_INCLUDE_PATHS=$SRCDIR/llvm/projects/libcxxabi/include \
   -DCMAKE_C_FLAGS="-nostdlib++" \
@@ -28,5 +29,18 @@ $CMAKE -G Ninja \
   $SRCDIR/llvm/projects/libcxx
 
 # Force to remove isntall path from compiled libraries.
+# cmake leave compiled directory in .so file unfortunately.
 sed -e "s;:$DEST/lib;;" \
   -i build.ninja
+
+# Modify lit.site.cfg to pass installed libraries' path
+sed -e 's:^config.test_linker_flags.*$:config.test_linker_flags        = "-L'$RESDIR'/lib/linux/ve -Wl,-rpath,'$RESDIR'/lib/linux/ve":' \
+    -i test/lit.site.cfg
+
+# Modify lit.site.cfg to enable llvm_unwinder
+sed -e 's:^config.llvm_unwinder.*$:config.llvm_unwinder            = True:' \
+    -i test/lit.site.cfg
+
+# Add -j1 to lit.py
+sed -e 's:lit.py:lit.py -j1:' \
+    -i build.ninja

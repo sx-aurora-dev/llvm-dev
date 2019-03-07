@@ -104,6 +104,9 @@ libcxx:
 	    ${SRCDIR}/scripts/cmake-libcxx.sh
 	cd $@; ${NINJA} ${THREADS} install
 
+check-libcxx: libcxx
+	cd libcxx; ${NINJA} ${THREADS} check-libcxx
+
 openmp:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
