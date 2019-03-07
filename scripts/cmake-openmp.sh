@@ -15,4 +15,13 @@ $CMAKE -G Ninja \
   -DCMAKE_C_FLAGS="" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
   -DLIBOMP_ARCH="$OMPARCH" \
+  -DOPENMP_LLVM_TOOLS_DIR=$TOOLDIR \
   $SRCDIR/llvm/projects/openmp
+
+# Modify lit.site.cfg to test on VE
+sed -e 's:test_openmp_flags = ":test_openmp_flags = "-target ve-linux -frtlib-add-rpath -ldl :' \
+    -i runtime/test/lit.site.cfg
+
+# Add -j1 to llvm-lit
+sed -e 's:llvm-lit:llvm-lit -j1:' \
+    -i build.ninja

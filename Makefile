@@ -17,6 +17,8 @@ LIBSUFFIX = /linux/ve/
 CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3 -fno-vectorize -fno-slp-vectorize \
 	-mllvm -combiner-use-vector-store=false
+# llvm test tools are not installed, so need to specify them independently
+TOOLDIR = ${BUILD_TOP_DIR}/build/bin
 
 RM = rm
 CMAKE = cmake3
@@ -104,8 +106,12 @@ openmp:
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} OMPARCH=${OMPARCH} \
-	    SRCDIR=${SRCDIR} ${SRCDIR}/scripts/cmake-openmp.sh
+	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
+	    ${SRCDIR}/scripts/cmake-openmp.sh
 	cd $@; ${NINJA} ${THREADS} install
+
+check-openmp: openmp
+	cd openmp; ${NINJA} ${THREADS} check-openmp
 
 shallow:
 	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
