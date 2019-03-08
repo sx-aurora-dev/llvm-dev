@@ -70,9 +70,16 @@ compiler-rt:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
+	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
+	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${SRCDIR}/scripts/cmake-compiler-rt.sh
 	cd $@; ${NINJA} ${THREADS} install
+
+# This target is not working at the moment since we don't
+# enable sanitizer for VE yet.
+check-compiler-rt: compiler-rt
+	cd compiler-rt; ${NINJA} ${THREADS} check-builtins
+	cd compiler-rt; ${NINJA} ${THREADS} check-sanitizer
 
 libunwind:
 	mkdir -p $@

@@ -13,7 +13,7 @@ $CMAKE -G Ninja \
   -DCMAKE_AR=$DEST/bin/llvm-ar \
   -DCMAKE_RANLIB=$DEST/bin/llvm-ranlib \
   -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
-  -DLLVM_CONFIG_PATH=$DEST/bin/llvm-config \
+  -DLLVM_CONFIG_PATH=$TOOLDIR/llvm-config \
   -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
   -DCMAKE_INSTALL_PREFIX="$RESDIR" \
   -DCMAKE_CXX_FLAGS="-nostdlib" \
