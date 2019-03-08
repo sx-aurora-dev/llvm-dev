@@ -8,9 +8,10 @@ BUILD_TYPE = Release
 BUILD_TARGET = "VE;X86"
 TARGET = ve-linux
 OMPARCH = ve
-# DEST and SRCDIR requires to use an abosolute path
+# DEST, SRCDIR, and BUILDIDR requires to use an abosolute path
 DEST = ${BUILD_TOP_DIR}/install
 SRCDIR = ${BUILD_TOP_DIR}
+BUILDDIR = ${BUILD_TOP_DIR}/build
 # RESDIR requires trailing '/'.
 RESDIR = ${DEST}/lib/clang/9.0.0/
 LIBSUFFIX = /linux/ve/
@@ -18,7 +19,7 @@ CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3 -fno-vectorize -fno-slp-vectorize \
 	-mllvm -combiner-use-vector-store=false
 # llvm test tools are not installed, so need to specify them independently
-TOOLDIR = ${BUILD_TOP_DIR}/build/bin
+TOOLDIR = ${BUILDDIR}/bin
 
 RM = rm
 CMAKE = cmake3
@@ -37,33 +38,29 @@ check-source:
 	@test -d llvm || exit 1
 
 cmake:
-	mkdir -p build
-	cd build; CMAKE=${CMAKE} DEST=${DEST} TARGET=${BUILD_TARGET} \
+	mkdir -p ${BUILDDIR}
+	cd ${BUILDDIR}; CMAKE=${CMAKE} DEST=${DEST} TARGET=${BUILD_TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
 	    ${SRCDIR}/scripts/cmake-llvm.sh
 
 build:
-	@test -d build || echo Need to cmake first by \"make cmake\"
-	@test -d build || exit 1
-	cd build; ${NINJA} ${THREADS}
+	@test -d ${BUILDDIR} || echo Need to cmake first by \"make cmake\"
+	@test -d ${BUILDDIR} || exit 1
+	cd ${BUILDDIR}; ${NINJA} ${THREADS}
 
 install: build
-	cd build; ${NINJA} ${THREADS} install
+	cd ${BUILDDIR}; ${NINJA} ${THREADS} install
 
 installall: install ve-csu compiler-rt libunwind libcxxabi libcxx openmp
 
 build-debug:
-	mkdir -p $@
-	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${BUILD_TARGET} \
-	    BUILD_TYPE=Debug SRCDIR=${SRCDIR} \
-	    ${SRCDIR}/scripts/cmake-llvm.sh
-	cd $@; ${NINJA} ${THREADS}
+	make BUILDDIR=${BUILD_TOP_DIR}/build-debug BUILD_TYPE=Debug ${MFLAGS}
 
 check-llvm: build
-	cd build; ${NINJA} ${THREADS} check-llvm
+	cd ${BUILDDIR}; ${NINJA} ${THREADS} check-llvm
 
 check-clang: build
-	cd build; ${NINJA} ${THREADS} check-clang
+	cd ${BUILDDIR}; ${NINJA} ${THREADS} check-clang
 
 ve-csu:
 	cd $@; make CLANG=${CLANG} DEST=${CSUDIR} TARGET=${TARGET} \
