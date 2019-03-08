@@ -17,4 +17,17 @@ $CMAKE -G Ninja \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_C_FLAGS="-nostdlib" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
+  -DLLVM_PATH=$SRCDIR/llvm \
   $SRCDIR/llvm/projects/libunwind
+
+# Modify lit.site.cfg to pass installed libraries' path
+sed -e 's:^config.test_linker_flags.*$:config.test_linker_flags        = "-L'$RESDIR'/lib/linux/ve -Wl,-rpath,'$RESDIR'/lib/linux/ve":' \
+    -i test/lit.site.cfg
+
+# Modify lit.site.cfg to enable builtins_library
+sed -e '1i config.builtins_library         = "'$RESDIR/lib/linux/libclang_rt.builtins-ve.a'"' \
+    -i test/lit.site.cfg
+
+# Add -j1 to llvm-lit
+sed -e 's: /llvm-lit: '$TOOLDIR'/llvm-lit -j1:' \
+    -i build.ninja

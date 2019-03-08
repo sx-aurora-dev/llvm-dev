@@ -81,9 +81,13 @@ libunwind:
 	mkdir -p $@
 	cd $@; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} SRCDIR=${SRCDIR} \
+	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
+	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${SRCDIR}/scripts/cmake-libunwind.sh
 	cd $@; ${NINJA} ${THREADS} install
+
+check-libunwind: libunwind
+	cd libunwind; ${NINJA} ${THREADS} check-unwind
 
 libcxxabi:
 	mkdir -p $@

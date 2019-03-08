@@ -26,6 +26,7 @@ $CMAKE -G Ninja \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_CXX_FLAGS="-nostdlib++" \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
+  -DLIBCXX_USE_COMPILER_RT=True \
   $SRCDIR/llvm/projects/libcxx
 
 # Force to remove isntall path from compiled libraries.
