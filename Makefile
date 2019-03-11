@@ -53,7 +53,7 @@ cmake:
 	mkdir -p ${LLVM_BUILDDIR}
 	cd ${LLVM_BUILDDIR}; CMAKE=${CMAKE} DEST=${DEST} \
 	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
-	    ${SRCDIR}/scripts/cmake-llvm.sh
+	    ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
 
 build:
 	@test -d ${LLVM_BUILDDIR} || echo Need to cmake first by \"make cmake\"
@@ -87,7 +87,7 @@ compiler-rt:
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${SRCDIR}/scripts/cmake-compiler-rt.sh
+	    ${LLVM_DEV_DIR}/scripts/cmake-compiler-rt.sh
 	cd ${CMPRT_BUILDDIR}; ${NINJA} ${THREADS} install
 
 # This target is not working at the moment since we don't
@@ -102,7 +102,7 @@ libunwind:
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${SRCDIR}/scripts/cmake-libunwind.sh
+	    ${LLVM_DEV_DIR}/scripts/cmake-libunwind.sh
 	cd ${UNWIND_BUILDDIR}; ${NINJA} ${THREADS} install
 
 check-libunwind: libunwind
@@ -114,7 +114,7 @@ libcxxabi:
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${SRCDIR}/scripts/cmake-libcxxabi.sh
+	    ${LLVM_DEV_DIR}/scripts/cmake-libcxxabi.sh
 	cd ${CXXABI_BUILDDIR}; ${NINJA} ${THREADS} install
 
 check-libcxxabi: libcxxabi
@@ -126,7 +126,7 @@ libcxx:
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${SRCDIR}/scripts/cmake-libcxx.sh
+	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
 	cd ${CXX_BUILDDIR}; ${NINJA} ${THREADS} install
 
 check-libcxx: libcxx
@@ -138,7 +138,7 @@ openmp:
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} OMPARCH=${OMPARCH} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${SRCDIR}/scripts/cmake-openmp.sh
+	    ${LLVM_DEV_DIR}/scripts/cmake-openmp.sh
 	cd ${OPENMP_BUILDDIR}; ${NINJA} ${THREADS} install
 
 check-openmp: openmp
@@ -146,19 +146,19 @@ check-openmp: openmp
 
 shallow:
 	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${SRCDIR}/scripts/clone-source.sh --depth 1
+	    ${LLVM_DEV_DIR}/scripts/clone-source.sh --depth 1
 
 deep:
 	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${SRCDIR}/scripts/clone-source.sh
+	    ${LLVM_DEV_DIR}/scripts/clone-source.sh
 
 shallow-update:
 	BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${SRCDIR}/scripts/update-source.sh --depth 1
+	    ${LLVM_DEV_DIR}/scripts/update-source.sh --depth 1
 
 deep-update:
 	BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${SRCDIR}/scripts/update-source.sh
+	    ${LLVM_DEV_DIR}/scripts/update-source.sh
 
 clean:
 	${RM} -rf build compiler-rt libunwind libcxxabi libcxx openmp \
