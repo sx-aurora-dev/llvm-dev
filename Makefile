@@ -13,8 +13,8 @@ OMPARCH = ve
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
 DEST = ${LLVM_DEV_DIR}/install
 SRCDIR = ${LLVM_DEV_DIR}
-LLVM_SRCDIR = ${LLVM_DEV_DIR}/llvm              # these are not modifiable
-VECSU_SRCDIR = ${LLVM_DEV_DIR}/ve-csu           # these are not modifiable
+LLVM_SRCDIR = ${SRCDIR}/llvm                    # these are not modifiable
+VECSU_SRCDIR = ${SRCDIR}/ve-csu                 # these are not modifiable
 BUILDDIR = ${LLVM_DEV_DIR}
 LLVM_BUILDDIR = ${BUILDDIR}/build
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
@@ -29,7 +29,7 @@ RESDIR = ${DEST}/lib/clang/9.0.0/
 LIBSUFFIX = /linux/ve/
 CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3 -fno-vectorize -fno-slp-vectorize \
-	-mllvm -combiner-use-vector-store=false
+    -mllvm -combiner-use-vector-store=false
 # llvm test tools are not installed, so need to specify them independently
 TOOLDIR = ${LLVM_BUILDDIR}/bin
 
