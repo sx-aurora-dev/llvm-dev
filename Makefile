@@ -46,8 +46,9 @@ musl:
 	make TARGET=ve-linux-musl all
 
 check-source:
-	@test -d llvm || echo Need to prepare source code by \"make shallow\"
-	@test -d llvm || exit 1
+	@test -d ${SRCDIR} || echo Need to prepare source code by \
+	    \"make shallow\"
+	@test -d ${SRCDIR} || exit 1
 
 cmake:
 	mkdir -p ${LLVM_BUILDDIR}
