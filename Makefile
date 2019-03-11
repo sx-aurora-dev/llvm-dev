@@ -3,7 +3,7 @@ THIS_MAKEFILE_PATH = $(abspath $(lastword $(MAKEFILE_LIST)))
 LLVM_DEV_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
 
 # Retrieve all sources from this repo's parent
-REPO = $(dir $(shell cd ${LLVM_DEV_DIR}; git config remote.origin.url))
+REPO = $(dir $(shell cd ${LLVM_DEV_DIR} && git config remote.origin.url))
 BRANCH = develop
 BUILD_TYPE = Release
 BUILD_TARGET = "VE;X86"
@@ -14,7 +14,7 @@ OMPARCH = ve
 DEST = ${LLVM_DEV_DIR}/install
 SRCDIR = ${LLVM_DEV_DIR}
 LLVM_SRCDIR = ${LLVM_DEV_DIR}/llvm              # these are not modifiable
-VECSU_SRCDIR = ${LLVM_DEV_DIR}/vecsu            # these are not modifiable
+VECSU_SRCDIR = ${LLVM_DEV_DIR}/ve-csu           # these are not modifiable
 BUILDDIR = ${LLVM_DEV_DIR}
 LLVM_BUILDDIR = ${BUILDDIR}/build
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
@@ -51,17 +51,17 @@ check-source:
 
 cmake:
 	mkdir -p ${LLVM_BUILDDIR}
-	cd ${LLVM_BUILDDIR}; CMAKE=${CMAKE} DEST=${DEST} \
+	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
 
 build:
 	@test -d ${LLVM_BUILDDIR} || echo Need to cmake first by \"make cmake\"
 	@test -d ${LLVM_BUILDDIR} || exit 1
-	cd ${LLVM_BUILDDIR}; ${NINJA} ${THREADS}
+	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS}
 
 install: build
-	cd ${LLVM_BUILDDIR}; ${NINJA} ${THREADS} install
+	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} install
 
 installall: install ve-csu compiler-rt libunwind libcxxabi libcxx openmp
 
@@ -72,77 +72,77 @@ build-debug:
 	    ${MFLAGS} build
 
 check-llvm: build
-	cd ${LLVM_BUILDDIR}; ${NINJA} ${THREADS} check-llvm
+	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} check-llvm
 
 check-clang: build
-	cd ${LLVM_BUILDDIR}; ${NINJA} ${THREADS} check-clang
+	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} check-clang
 
 ve-csu:
-	cd ${VECSU_BUILDDIR}; make CLANG=${CLANG} DEST=${CSUDIR} \
+	cd ${VECSU_BUILDDIR} && make CLANG=${CLANG} DEST=${CSUDIR} \
 	    TARGET=${TARGET} install
 
 compiler-rt:
 	mkdir -p ${CMPRT_BUILDDIR}
-	cd ${CMPRT_BUILDDIR}; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${CMPRT_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-compiler-rt.sh
-	cd ${CMPRT_BUILDDIR}; ${NINJA} ${THREADS} install
+	cd ${CMPRT_BUILDDIR} && ${NINJA} ${THREADS} install
 
 # This target is not working at the moment since we don't
 # enable sanitizer for VE yet.
 check-compiler-rt: compiler-rt
-	cd compiler-rt; ${NINJA} ${THREADS} check-builtins
-	cd compiler-rt; ${NINJA} ${THREADS} check-sanitizer
+	cd compiler-rt && ${NINJA} ${THREADS} check-builtins
+	cd compiler-rt && ${NINJA} ${THREADS} check-sanitizer
 
 libunwind:
 	mkdir -p ${UNWIND_BUILDDIR}
-	cd ${UNWIND_BUILDDIR}; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${UNWIND_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libunwind.sh
-	cd ${UNWIND_BUILDDIR}; ${NINJA} ${THREADS} install
+	cd ${UNWIND_BUILDDIR} && ${NINJA} ${THREADS} install
 
 check-libunwind: libunwind
-	cd libunwind; ${NINJA} ${THREADS} check-unwind
+	cd libunwind && ${NINJA} ${THREADS} check-unwind
 
 libcxxabi:
 	mkdir -p ${CXXABI_BUILDDIR}
-	cd ${CXXABI_BUILDDIR}; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${CXXABI_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxxabi.sh
-	cd ${CXXABI_BUILDDIR}; ${NINJA} ${THREADS} install
+	cd ${CXXABI_BUILDDIR} && ${NINJA} ${THREADS} install
 
 check-libcxxabi: libcxxabi
-	cd libcxxabi; ${NINJA} ${THREADS} check-libcxxabi
+	cd libcxxabi && ${NINJA} ${THREADS} check-libcxxabi
 
 libcxx:
 	mkdir -p ${CXX_BUILDDIR}
-	cd ${CXX_BUILDDIR}; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
-	cd ${CXX_BUILDDIR}; ${NINJA} ${THREADS} install
+	cd ${CXX_BUILDDIR} && ${NINJA} ${THREADS} install
 
 check-libcxx: libcxx
-	cd libcxx; ${NINJA} ${THREADS} check-libcxx
+	cd libcxx && ${NINJA} ${THREADS} check-libcxx
 
 openmp:
 	mkdir -p ${OPENMP_BUILDDIR}
-	cd ${OPENMP_BUILDDIR}; CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${OPENMP_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} OMPARCH=${OMPARCH} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-openmp.sh
-	cd ${OPENMP_BUILDDIR}; ${NINJA} ${THREADS} install
+	cd ${OPENMP_BUILDDIR} && ${NINJA} ${THREADS} install
 
 check-openmp: openmp
-	cd openmp; ${NINJA} ${THREADS} check-openmp
+	cd openmp && ${NINJA} ${THREADS} check-openmp
 
 shallow:
 	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
