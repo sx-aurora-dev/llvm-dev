@@ -34,6 +34,7 @@ OPTFLAGS = -O3 -fno-vectorize -fno-slp-vectorize \
 TOOLDIR = ${LLVM_BUILDDIR}/bin
 
 RM = rm
+RMDIR = rmdir
 CMAKE = cmake3
 NINJA = ninja-build
 THREADS = -j8
@@ -162,13 +163,16 @@ deep-update:
 	    ${LLVM_DEV_DIR}/scripts/update-source.sh
 
 clean:
-	${RM} -rf build compiler-rt libunwind libcxxabi libcxx openmp \
-	    build-debug
-	-cd ve-csu && make clean
+	${RM} -rf ${LLVM_BUILDDIR} ${CMPRT_BUILDDIR} ${UNWIND_BUILDDIR} \
+	    ${CXXABI_BUILDDIR} ${CXX_BUILDDIR} ${OPENMP_BUILDDIR} \
+	    ${LLVMDBG_BUILDDIR}
+	-cd ${VECSU_BUILDDIR} && make clean
+	-${RMDIR} ${BUILDDIR}
 
 distclean: clean
-	${RM} -rf llvm ve-csu
+	${RM} -rf ${LLVM_SRCDIR} ${VECSU_SRCDIR}
 	${RM} -rf ${DEST}
+	-${RMDIR} ${SRCDIR}
 
 FORCE:
 
