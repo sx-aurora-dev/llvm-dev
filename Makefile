@@ -13,12 +13,14 @@ OMPARCH = ve
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
 DEST = ${LLVM_DEV_DIR}/install
 SRCDIR = ${LLVM_DEV_DIR}
-LLVM_SRCDIR = ${SRCDIR}/llvm                    # these are not modifiable
-VECSU_SRCDIR = ${SRCDIR}/ve-csu                 # these are not modifiable
+# LLVM_SRCDIR and VECSU_SRCDIR are not modifiable since those are
+# hard-coded in scripts.
+LLVM_SRCDIR = ${SRCDIR}/llvm
+VECSU_SRCDIR = ${SRCDIR}/ve-csu
 BUILDDIR = ${LLVM_DEV_DIR}
 LLVM_BUILDDIR = ${BUILDDIR}/build
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
-VECSU_BUILDDIR = ${VECSU_SRCDIR}                # this must be equal to SRCDIR
+VECSU_BUILDDIR = ${BUILDDIR}/ve-csu
 CMPRT_BUILDDIR = ${BUILDDIR}/compiler-rt
 UNWIND_BUILDDIR = ${BUILDDIR}/libunwind
 CXXABI_BUILDDIR = ${BUILDDIR}/libcxxabi
@@ -80,8 +82,10 @@ check-clang: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} check-clang
 
 ve-csu:
+	mkdir -p ${VECSU_BUILDDIR}
 	cd ${VECSU_BUILDDIR} && make CLANG=${CLANG} DEST=${CSUDIR} \
-	    TARGET=${TARGET} install
+	    TARGET=${TARGET} SRCDIR=${VECSU_SRCDIR} \
+	    -f ${VECSU_SRCDIR}/Makefile install
 
 compiler-rt:
 	mkdir -p ${CMPRT_BUILDDIR}
@@ -166,13 +170,14 @@ clean:
 	${RM} -rf ${LLVM_BUILDDIR} ${CMPRT_BUILDDIR} ${UNWIND_BUILDDIR} \
 	    ${CXXABI_BUILDDIR} ${CXX_BUILDDIR} ${OPENMP_BUILDDIR} \
 	    ${LLVMDBG_BUILDDIR}
-	-cd ${VECSU_BUILDDIR} && make clean
+	-cd ${VECSU_BUILDDIR} && make -f ${VECSU_SRCDIR}/Makefile clean
+	-${RMDIR} ${VECSU_BUILDDIR}
 	-${RMDIR} ${BUILDDIR}
 
 distclean: clean
-	${RM} -rf ${LLVM_SRCDIR} ${VECSU_SRCDIR}
 	${RM} -rf ${DEST}
-	-${RMDIR} ${SRCDIR}
+#	${RM} -rf ${LLVM_SRCDIR} ${VECSU_SRCDIR}
+#	-${RMDIR} ${SRCDIR}
 
 FORCE:
 

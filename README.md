@@ -8,21 +8,27 @@ LLVM requires multiple repositories to combine and LLVM for VE requires
 multiple libraries' cross-compile.  Those are little difficult to handle
 at the beginning.  So, I made this easy to use developing environment.
 
-Quick step:
+These are quick steps to compile LLVM for VE.  However, if you are going
+to work on LLVM for VE, I recommend to use `make` directly like explained
+later.
 
-    % git clone <this repository>
-    % ./llvm-dev/clone.sh
-    % scl enable devtoolset-8 bash
-    % ./llvm-dev/build-and-install.sh <install directory>
+Quick step (compile only)
+=========================
+
+    $ git clone <this repository>
+    $ ./llvm-dev/clone.sh
+    $ scl enable devtoolset-8 bash
+    $ ./llvm-dev/build-and-install.sh <install directory>
+    $ ls
+    build  llvm-dev  src
 
 Source code is downloaded into `src` direcotry, then llvm is build in `build`
 directory and installed to `<install direcotry>`.
 
 You can change the directories and build type as below.
 
-    % SRCDIR=src2 ./llvm-dev/clone.ch
-    % SRCDIR=src2 BUILD_DIR=build-debug BUILD_TYPE=Debug ./llvm-dev/build-and-install.sh ~/.local-debug
-
+    $ SRCDIR=src2 ./llvm-dev/clone.ch
+    $ SRCDIR=src2 BUILD_DIR=build-debug BUILD_TYPE=Debug ./llvm-dev/build-and-install.sh ~/.local-debug
 
 Prerequisites
 =============
@@ -134,4 +140,11 @@ You can test compiled clang by following command.
 You can test compiled llvm by following command.
 
     $ make check-llvm
+
+You can test cross-compiled libraries on VE by following command.
+
+    $ make check-libunwind
+    $ make check-libcxxabi
+    $ make check-libcxx
+    $ make check-openmp
 
