@@ -20,12 +20,12 @@ VECSU_SRCDIR = ${SRCDIR}/ve-csu
 BUILDDIR = ${LLVM_DEV_DIR}
 LLVM_BUILDDIR = ${BUILDDIR}/build
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
-VECSU_BUILDDIR = ${BUILDDIR}/ve-csu
-CMPRT_BUILDDIR = ${BUILDDIR}/compiler-rt
-UNWIND_BUILDDIR = ${BUILDDIR}/libunwind
-CXXABI_BUILDDIR = ${BUILDDIR}/libcxxabi
-CXX_BUILDDIR = ${BUILDDIR}/libcxx
-OPENMP_BUILDDIR = ${BUILDDIR}/openmp
+VECSU_BUILDDIR = ${BUILDDIR}/build-ve-csu
+CMPRT_BUILDDIR = ${BUILDDIR}/build-compiler-rt
+UNWIND_BUILDDIR = ${BUILDDIR}/build-libunwind
+CXXABI_BUILDDIR = ${BUILDDIR}/build-libcxxabi
+CXX_BUILDDIR = ${BUILDDIR}/build-libcxx
+OPENMP_BUILDDIR = ${BUILDDIR}/build-openmp
 # RESDIR requires trailing '/'.
 RESDIR = ${DEST}/lib/clang/8.0.0/
 LIBSUFFIX = /linux/ve/
@@ -39,7 +39,7 @@ RM = rm
 RMDIR = rmdir
 CMAKE = cmake3
 NINJA = ninja-build
-THREADS = -j8
+THREADS = -j30
 CLANG = ${DEST}/bin/clang
 
 all: check-source cmake install libraries
