@@ -1,6 +1,7 @@
 #!/bin/sh
 
 OPT="$@"
+OPT1="$OPT"
 
 # Check target $REPO and remove trailing '/' from $REPO
 case x"$REPO" in
@@ -19,7 +20,7 @@ esac
 mkdir -p $SRCDIR
 cd $SRCDIR
 
-test -d llvm || git clone $REPO/llvm.git llvm $OPT
+test -d llvm || git clone $REPO/llvm.git llvm -b develop2_cdl $OPT1
 test -d llvm/tools/clang || git clone $REPO/clang.git llvm/tools/clang $OPT
 test -d llvm/projects/libcxx || \
   git clone $REPO/libcxx.git llvm/projects/libcxx $OPT
@@ -33,3 +34,7 @@ test -d llvm/projects/openmp || \
   git clone $REPO/openmp.git llvm/projects/openmp $OPT
 test -d ve-csu || \
   git clone $REPO/ve-csu.git ve-csu $OPT
+test -d llvm/tools/rv || \
+    git clone $REPO/rv.git llvm/tools/rv $OPT && \
+        cd llvm/tools/rv; git submodule update --init; cd ../../..
+
