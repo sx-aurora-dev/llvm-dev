@@ -11,7 +11,7 @@ TARGET = ve-linux
 OMPARCH = ve
 
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
-DEST = ${LLVM_DEV_DIR}/install
+DEST ?= ${LLVM_DEV_DIR}/install
 SRCDIR = ${LLVM_DEV_DIR}
 # LLVM_SRCDIR and VECSU_SRCDIR are not modifiable since those are
 # hard-coded in scripts.
