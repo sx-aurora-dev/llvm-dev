@@ -66,6 +66,9 @@ build:
 
 install: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} install
+	install scripts/set_llvm_env.sh ${DEST}/bin/set_llvm_env.sh
+	install scripts/rvclang ${DEST}/bin/rvclang
+	install scripts/rvclang++ ${DEST}/bin/rvclang++
 
 installall: install ve-csu compiler-rt libunwind libcxxabi libcxx openmp
 
