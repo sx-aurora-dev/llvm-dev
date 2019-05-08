@@ -44,4 +44,3 @@ cd $SRCDIR/llvm/projects/libcxxabi; update
 cd $SRCDIR/llvm/projects/compiler-rt; update
 cd $SRCDIR/llvm/projects/libunwind; update
 cd $SRCDIR/llvm/projects/openmp; update
-cd $SRCDIR/ve-csu; update

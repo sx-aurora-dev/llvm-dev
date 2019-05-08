@@ -31,5 +31,3 @@ test -d llvm/projects/libunwind || \
   git clone $REPO/libunwind.git llvm/projects/libunwind $OPT
 test -d llvm/projects/openmp || \
   git clone $REPO/openmp.git llvm/projects/openmp $OPT
-test -d ve-csu || \
-  git clone $REPO/ve-csu.git ve-csu $OPT

@@ -22,7 +22,6 @@ $CMAKE -G Ninja \
   -DLIBCXXABI_USE_LLVM_UNWINDER=True \
   -DLIBCXX_CXX_ABI=libcxxabi \
   -DLIBCXX_CXX_ABI_INCLUDE_PATHS=$SRCDIR/llvm/projects/libcxxabi/include \
-  -DCMAKE_C_FLAGS="-nostdlib++" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_CXX_FLAGS="-nostdlib++" \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \

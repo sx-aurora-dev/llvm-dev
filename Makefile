@@ -13,14 +13,12 @@ OMPARCH = ve
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
 DEST = ${LLVM_DEV_DIR}/install
 SRCDIR = ${LLVM_DEV_DIR}
-# LLVM_SRCDIR and VECSU_SRCDIR are not modifiable since those are
+# LLVM_SRCDIR is not modifiable since those are
 # hard-coded in scripts.
 LLVM_SRCDIR = ${SRCDIR}/llvm
-VECSU_SRCDIR = ${SRCDIR}/ve-csu
 BUILDDIR = ${LLVM_DEV_DIR}
 LLVM_BUILDDIR = ${BUILDDIR}/build
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
-VECSU_BUILDDIR = ${BUILDDIR}/ve-csu
 CMPRT_BUILDDIR = ${BUILDDIR}/compiler-rt
 UNWIND_BUILDDIR = ${BUILDDIR}/libunwind
 CXXABI_BUILDDIR = ${BUILDDIR}/libcxxabi
@@ -29,7 +27,7 @@ OPENMP_BUILDDIR = ${BUILDDIR}/openmp
 # RESDIR requires trailing '/'.
 RESDIR = ${DEST}/lib/clang/9.0.0/
 LIBSUFFIX = /linux/ve/
-CSUDIR = ${RESDIR}lib/linux/ve
+#CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3 -fno-vectorize -fno-slp-vectorize \
     -mllvm -combiner-use-vector-store=false
 # llvm test tools are not installed, so need to specify them independently
@@ -43,7 +41,7 @@ THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
 all: check-source cmake install libraries
-libraries: ve-csu compiler-rt libunwind libcxxabi libcxx openmp
+libraries: compiler-rt libunwind libcxxabi libcxx openmp
 
 musl:
 	make TARGET=ve-linux-musl all
@@ -67,7 +65,7 @@ build:
 install: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} install
 
-installall: install ve-csu compiler-rt libunwind libcxxabi libcxx openmp
+installall: install compiler-rt libunwind libcxxabi libcxx openmp
 
 build-debug:
 	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} BUILD_TYPE=Debug \
@@ -80,12 +78,6 @@ check-llvm: build
 
 check-clang: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} check-clang
-
-ve-csu:
-	mkdir -p ${VECSU_BUILDDIR}
-	cd ${VECSU_BUILDDIR} && make CLANG=${CLANG} DEST=${CSUDIR} \
-	    TARGET=${TARGET} SRCDIR=${VECSU_SRCDIR} \
-	    -f ${VECSU_SRCDIR}/Makefile install
 
 compiler-rt:
 	mkdir -p ${CMPRT_BUILDDIR}
@@ -170,17 +162,15 @@ clean:
 	${RM} -rf ${LLVM_BUILDDIR} ${CMPRT_BUILDDIR} ${UNWIND_BUILDDIR} \
 	    ${CXXABI_BUILDDIR} ${CXX_BUILDDIR} ${OPENMP_BUILDDIR} \
 	    ${LLVMDBG_BUILDDIR}
-	-cd ${VECSU_BUILDDIR} && make -f ${VECSU_SRCDIR}/Makefile clean
-	-${RMDIR} ${VECSU_BUILDDIR}
 	-${RMDIR} ${BUILDDIR}
 
 distclean: clean
 	${RM} -rf ${DEST}
-#	${RM} -rf ${LLVM_SRCDIR} ${VECSU_SRCDIR}
+#	${RM} -rf ${LLVM_SRCDIR}
 #	-${RMDIR} ${SRCDIR}
 
 FORCE:
 
 .PHONY: FORCE shallow deep clean dist clean check-source cmake build install \
-	libraries ve-csu compiler-rt libunwind libcxxabi libcxx openmp \
+	libraries compiler-rt libunwind libcxxabi libcxx openmp \
 	build-debug musl installall
