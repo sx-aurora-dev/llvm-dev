@@ -1,0 +1,13 @@
+#! /usr/bin/bash
+
+if [ -z ${LLVM_VE_PREFIX+x} ]; then
+  NLDOPTS=""
+else
+  VELIBS=${LLVM_VE_PREFIX}/lib/clang/9.0.0/lib/linux/ve
+  NLDOPTS="-Wl,-rpath,${VELIBS}"
+fi
+
+
+CLANGFLAGS="-fno-slp-vectorize -mllvm -llvm-loopvec=false -Xclang -load -Xclang libRV.so -mllvm -rv"
+
+${LLVM_VE_PREFIX}/bin/clang++ ${CLANGFLAGS} ${NLDOPTS} $@

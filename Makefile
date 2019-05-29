@@ -43,14 +43,19 @@ THREADS = -j8
 CLANG = ${DEST}/bin/clang
 SETUPENV = ${DEST}/setup_env.sh
 
-all: check-source cmake install libraries setup_env
+all: check-source cmake install libraries setup_env rvclang
 libraries: compiler-rt libunwind libcxxabi libcxx openmp
 
 setup_env:
 	mkdir -p $(dir ${SETUPENV})
 	@cp ${LLVM_DEV_DIR}/scripts/setup_env.sh.prefix ${SETUPENV}
-	@echo "LLVM_VE_PREFIX=${DEST}" >> ${SETUPENV}
+	@echo "export LLVM_VE_PREFIX=${DEST}" >> ${SETUPENV}
 	@cat ${LLVM_DEV_DIR}/scripts/setup_env.sh.suffix >> ${SETUPENV}
+
+rvclang:
+	mkdir -p ${DEST}/bin
+	@cp ${LLVM_DEV_DIR}/prefix/rvclang ${DEST}/bin
+	@cp ${LLVM_DEV_DIR}/prefix/rvclang++ ${DEST}/bin
 
 musl:
 	make TARGET=ve-linux-musl all
