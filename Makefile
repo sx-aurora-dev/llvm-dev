@@ -4,6 +4,8 @@ LLVM_DEV_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
 
 # Retrieve all sources from this repo's parent
 REPO = $(dir $(shell cd ${LLVM_DEV_DIR} && git config remote.origin.url))
+CDLREPO = https://github.com/cdl-saarland
+
 BRANCH = develop
 BUILD_TYPE = Release
 BUILD_TARGET = "VE;X86"
@@ -39,9 +41,16 @@ CMAKE = cmake3
 NINJA = ninja-build
 THREADS = -j8
 CLANG = ${DEST}/bin/clang
+SETUPENV = ${DEST}/setup_env.sh
 
-all: check-source cmake install libraries
+all: check-source cmake install libraries setup_env
 libraries: compiler-rt libunwind libcxxabi libcxx openmp
+
+setup_env:
+	mkdir -p $(dir ${SETUPENV})
+	@cp ${LLVM_DEV_DIR}/scripts/setup_env.sh.prefix ${SETUPENV}
+	@echo "LLVM_VE_PREFIX=${DEST}" >> ${SETUPENV}
+	@cat ${LLVM_DEV_DIR}/scripts/setup_env.sh.suffix >> ${SETUPENV}
 
 musl:
 	make TARGET=ve-linux-musl all
@@ -143,11 +152,11 @@ check-openmp: openmp
 	cd openmp && ${NINJA} ${THREADS} check-openmp
 
 shallow:
-	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
+	REPO=${REPO} CDLREPO=${CDLREPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
 	    ${LLVM_DEV_DIR}/scripts/clone-source.sh --depth 1
 
 deep:
-	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
+	REPO=${REPO} CDLREPO=${CDLREPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
 	    ${LLVM_DEV_DIR}/scripts/clone-source.sh
 
 shallow-update:
