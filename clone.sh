@@ -4,7 +4,7 @@ REPO=$1
 shift
 
 if test x$REPO = x; then
-        REPO=$(cd `dirname $0` && git config remote.origin.url | sed 's%/llvm-dev.git%%')
+        REPO=$(dirname $(cd `dirname $0` && git config remote.origin.url))
 fi
 
 SRCDIR=$(readlink -f ${SRCDIR:=src})
