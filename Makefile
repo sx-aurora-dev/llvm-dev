@@ -41,7 +41,7 @@ CMAKE = cmake3
 NINJA = ninja-build
 THREADS = -j16
 CLANG = ${DEST}/bin/clang
-SETUPENV = ${DEST}/setup_env.sh
+SETUPENV = ${DEST}/bin/llvmvars.sh
 
 all: check-source cmake install libraries setup_env rvclang
 libraries: compiler-rt libunwind libcxxabi libcxx openmp
@@ -79,7 +79,7 @@ build:
 install: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} install
 
-installall: install compiler-rt libunwind libcxxabi libcxx openmp
+installall: install rvclang setup_env compiler-rt libunwind libcxxabi libcxx openmp
 
 build-debug:
 	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} BUILD_TYPE=Debug \
