@@ -26,6 +26,8 @@ UNWIND_BUILDDIR = ${BUILDDIR}/libunwind
 CXXABI_BUILDDIR = ${BUILDDIR}/libcxxabi
 CXX_BUILDDIR = ${BUILDDIR}/libcxx
 OPENMP_BUILDDIR = ${BUILDDIR}/openmp
+# LLVM_VE_PREFIX might be set outside
+LLVM_VE_PREFIX ?= ${DEST}
 # RESDIR requires trailing '/'.
 RESDIR = ${DEST}/lib/clang/9.0.0/
 LIBSUFFIX = /linux/ve/
@@ -49,7 +51,7 @@ libraries: compiler-rt libunwind libcxxabi libcxx openmp
 setup_env:
 	mkdir -p $(dir ${SETUPENV})
 	@cp ${LLVM_DEV_DIR}/scripts/setup_env.sh.prefix ${SETUPENV}
-	@echo "export LLVM_VE_PREFIX=${DEST}" >> ${SETUPENV}
+	@echo "export LLVM_VE_PREFIX=${LLVM_VE_PREFIX}" >> ${SETUPENV}
 	@cat ${LLVM_DEV_DIR}/scripts/setup_env.sh.suffix >> ${SETUPENV}
 
 rvclang:
