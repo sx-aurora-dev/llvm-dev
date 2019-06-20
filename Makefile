@@ -36,7 +36,7 @@ RM = rm
 RMDIR = rmdir
 CMAKE = cmake3
 NINJA = ninja-build
-THREADS = -j16
+THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
 all: check-source cmake install libraries
