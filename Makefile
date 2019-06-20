@@ -28,7 +28,7 @@ OPENMP_BUILDDIR = ${BUILDDIR}/openmp
 RESDIR = ${DEST}/lib/clang/9.0.0/
 LIBSUFFIX = /linux/ve/
 #CSUDIR = ${RESDIR}lib/linux/ve
-OPTFLAGS = -O3 -fno-vectorize -fno-slp-vectorize
+OPTFLAGS = -O3
 # llvm test tools are not installed, so need to specify them independently
 TOOLDIR = ${LLVM_BUILDDIR}/bin
 
