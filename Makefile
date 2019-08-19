@@ -25,7 +25,7 @@ CXXABI_BUILDDIR = ${BUILDDIR}/libcxxabi
 CXX_BUILDDIR = ${BUILDDIR}/libcxx
 OPENMP_BUILDDIR = ${BUILDDIR}/openmp
 # RESDIR requires trailing '/'.
-RESDIR = ${DEST}/lib/clang/9.0.0/
+RESDIR = ${DEST}/lib/clang/10.0.0/
 LIBSUFFIX = /linux/ve/
 #CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3
