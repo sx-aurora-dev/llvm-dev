@@ -15,11 +15,11 @@ $CMAKE -G Ninja \
   -DCMAKE_CXX_FLAGS="-nostdlib++" \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
-  -DLLVM_PATH=$SRCDIR/llvm \
-  -DLLVM_MAIN_SRC_DIR=$SRCDIR/llvm \
+  -DLLVM_PATH=$SRCDIR/llvm-project/llvm \
+  -DLLVM_MAIN_SRC_DIR=$SRCDIR/llvm-project/llvm \
   -DLIBCXXABI_USE_COMPILER_RT=True \
   -DLIBCXXABI_HAS_NOSTDINCXX_FLAG=True \
-  $SRCDIR/llvm/projects/libcxxabi
+  $SRCDIR/llvm-project/libcxxabi
 
 # Modify lit.site.cfg to pass installed libraries' path
 sed -e '1i config.test_linker_flags        = "-L'$RESDIR'/lib/linux/ve -Wl,-rpath,'$RESDIR'/lib/linux/ve"' \

@@ -37,10 +37,4 @@ function update() {
   git reset --hard origin/$BRANCH
 }
 
-cd $SRCDIR/llvm; update
-cd $SRCDIR/llvm/tools/clang; update
-cd $SRCDIR/llvm/projects/libcxx; update
-cd $SRCDIR/llvm/projects/libcxxabi; update
-cd $SRCDIR/llvm/projects/compiler-rt; update
-cd $SRCDIR/llvm/projects/libunwind; update
-cd $SRCDIR/llvm/projects/openmp; update
+cd $SRCDIR/llvm-project; update

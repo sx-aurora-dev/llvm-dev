@@ -15,7 +15,7 @@ DEST = ${LLVM_DEV_DIR}/install
 SRCDIR = ${LLVM_DEV_DIR}
 # LLVM_SRCDIR is not modifiable since those are
 # hard-coded in scripts.
-LLVM_SRCDIR = ${SRCDIR}/llvm
+LLVM_SRCDIR = ${SRCDIR}/llvm-project/llvm
 BUILDDIR = ${LLVM_DEV_DIR}
 LLVM_BUILDDIR = ${BUILDDIR}/build
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug

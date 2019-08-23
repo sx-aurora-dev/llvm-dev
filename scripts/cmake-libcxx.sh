@@ -21,12 +21,12 @@ $CMAKE -G Ninja \
   -DLIBCXX_LIBDIR_SUFFIX="$LIBSUFFIX" \
   -DLIBCXXABI_USE_LLVM_UNWINDER=True \
   -DLIBCXX_CXX_ABI=libcxxabi \
-  -DLIBCXX_CXX_ABI_INCLUDE_PATHS=$SRCDIR/llvm/projects/libcxxabi/include \
+  -DLIBCXX_CXX_ABI_INCLUDE_PATHS=$SRCDIR/llvm-project/libcxxabi/include \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_CXX_FLAGS="-nostdlib++" \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
   -DLIBCXX_USE_COMPILER_RT=True \
-  $SRCDIR/llvm/projects/libcxx
+  $SRCDIR/llvm-project/libcxx
 
 # Force to remove isntall path from compiled libraries.
 # cmake leave compiled directory in .so file unfortunately.
