@@ -14,4 +14,4 @@ LLVM_DEV_DIR=$(dirname $(readlink -f $0))
 echo REPO=${REPO}
 echo SRCDIR=$SRCDIR
 
-make -f $LLVM_DEV_DIR/Makefile shallow REPO=$REPO SRCDIR=$SRCDIR
+make -f $LLVM_DEV_DIR/Makefile deep REPO=$REPO SRCDIR=$SRCDIR

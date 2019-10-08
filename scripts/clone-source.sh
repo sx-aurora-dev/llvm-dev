@@ -19,4 +19,5 @@ esac
 mkdir -p $SRCDIR
 cd $SRCDIR
 
-test -d llvm-project || git clone $REPO/llvm-project.git llvm-project $OPT
+test -d llvm-project || git clone --resurse-submodules $REPO/llvm-project.git llvm-project $OPT
+# test -d llvm-project/llvm/tools/rv || git clone --recurse-submodules necgit:simon/rv.git llvm-project/llvm/tools/rv
