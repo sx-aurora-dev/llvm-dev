@@ -5,6 +5,7 @@ $CMAKE -G Ninja \
   -DLLVM_TARGETS_TO_BUILD="$TARGET" \
   -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;libunwind;compiler-rt" \
   -DRV_ENABLE_CRT=on \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=on \
   -DBUILD_SHARED_LIBS=on \
   -DCMAKE_INSTALL_PREFIX=$DEST \
   $SRCDIR/llvm-project/llvm

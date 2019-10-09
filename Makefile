@@ -4,8 +4,8 @@ LLVM_DEV_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
 
 # Retrieve all sources from this repo's parent
 REPO = $(dir $(shell cd ${LLVM_DEV_DIR} && git config remote.origin.url))
-BRANCH = develop
-BUILD_TYPE = Release
+BRANCH = hpce/develop
+BUILD_TYPE = Debug
 BUILD_TARGET = "VE;X86"
 TARGET = ve-linux
 OMPARCH = ve
@@ -34,8 +34,8 @@ TOOLDIR = ${LLVM_BUILDDIR}/bin
 
 RM = rm
 RMDIR = rmdir
-CMAKE = cmake3
-NINJA = ninja-build
+CMAKE = cmake
+NINJA = ninja
 THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
