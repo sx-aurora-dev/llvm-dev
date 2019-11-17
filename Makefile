@@ -6,12 +6,14 @@ LLVM_DEV_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
 REPO = $(dir $(shell cd ${LLVM_DEV_DIR} && git config remote.origin.url))
 BRANCH = develop
 BUILD_TYPE = Release
-BUILD_TARGET = "VE;X86"
+BUILD_TARGET = "X86"
+EXP_TARGET = "VE"
 TARGET = ve-linux-gnu
 OMPARCH = ve
 
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
 DEST = ${LLVM_DEV_DIR}/install
+DBG_DEST = ${LLVM_DEV_DIR}/install-debug
 SRCDIR = ${LLVM_DEV_DIR}
 # LLVM_SRCDIR is not modifiable since those are
 # hard-coded in scripts.
@@ -53,7 +55,8 @@ check-source:
 cmake:
 	mkdir -p ${LLVM_BUILDDIR}
 	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
-	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
+	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} \
+	    EXP_TARGET=${EXP_TARGET} SRCDIR=${SRCDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
 
 build:
@@ -67,10 +70,14 @@ install: build
 installall: install compiler-rt libunwind libcxxabi libcxx openmp
 
 build-debug:
-	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} BUILD_TYPE=Debug \
-	    ${MFLAGS} cmake
-	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} BUILD_TYPE=Debug \
-	    ${MFLAGS} build
+	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} DEST=${DBG_DEST} \
+	    BUILD_TYPE=Debug ${MFLAGS} cmake
+	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} DEST=${DBG_DEST} \
+	    BUILD_TYPE=Debug ${MFLAGS} build
+
+install-debug:
+	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} DEST=${DBG_DEST} \
+	    BUILD_TYPE=Debug ${MFLAGS} install
 
 check-llvm: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} check-llvm
@@ -172,4 +179,4 @@ FORCE:
 
 .PHONY: FORCE shallow deep clean dist clean check-source cmake build install \
 	libraries compiler-rt libunwind libcxxabi libcxx openmp \
-	build-debug musl installall
+	build-debug install-debug musl installall
