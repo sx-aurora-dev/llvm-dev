@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 
+export ENV_ROOT=${PWD}
 declare -a PrefixArray=("${PWD}/build/build" "${PWD}/install")
 
 for Prefix in "${PrefixArray[@]}"; do
@@ -10,3 +11,8 @@ for Prefix in "${PrefixArray[@]}"; do
   export LIBRARY_PATH=${Prefix}/lib:${LIBRARY_PATH}
 done
 
+cfgFile="${ENV_ROOT}/.config.sh"
+if [ -f "$cfgFile" ]
+then
+  echo "Included $cfgFile"
+fi
