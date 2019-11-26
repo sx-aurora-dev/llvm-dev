@@ -34,8 +34,8 @@ TOOLDIR = ${LLVM_BUILDDIR}/bin
 
 RM = rm
 RMDIR = rmdir
-CMAKE = cmake
-NINJA = ninja
+CMAKE = cmake3
+NINJA = ninja-build
 THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
