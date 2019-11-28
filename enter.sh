@@ -1,7 +1,12 @@
 #! /usr/bin/env bash
 
+if [ -n "${INSIDE_SXAT_ENV}" ]; then
+	echo "Already inside LLVM environment! (INSIDE_SXAT_ENV is set)"
+	return;
+fi
+
 export ENV_ROOT=${PWD}
-declare -a PrefixArray=("${PWD}/build/build" "${PWD}/install")
+declare -a PrefixArray=("${PWD}/build/build" "${PWD}/prefix")
 
 for Prefix in "${PrefixArray[@]}"; do
   echo "Adding prefix ${Prefix}"
@@ -16,3 +21,5 @@ if [ -f "$cfgFile" ]
 then
   echo "Included $cfgFile"
 fi
+
+export INSIDE_SXAT_ENV=1
