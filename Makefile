@@ -10,6 +10,10 @@ BUILD_TARGET = "VE;X86"
 TARGET = ve-linux
 OMPARCH = ve
 
+# tools
+NINJA?=ninja-build
+CMAKE?=cmake3
+
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
 DEST = ${LLVM_DEV_DIR}/install
 SRCDIR = ${LLVM_DEV_DIR}

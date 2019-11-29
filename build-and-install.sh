@@ -2,9 +2,35 @@
 
 set -e
 
+echo "::::: Configuring Tools :::::"
+
+# configure environment
+function find_tool() {
+  for ToolPath in "$@"; do
+    local path_to_tool=$(which $ToolPath 2>/dev/null)
+    if [ -x "$path_to_tool" ] ; then
+       echo $path_to_tool
+       return
+    fi
+  done
+}
+
+NINJA=$(find_tool "ninja-build" "ninja")
+echo "Using ninja at ${NINJA}"
+
+declare -a CMakeToolArray=("cmake3" "cmake")
+CMAKE=$(find_tool "cmake3" "cmake")
+echo "Using cmake at ${CMAKE}"
+
+
+
 # pick installation prefix
 LLVM_DEV_DIR=$(dirname $(readlink -f $0))
-DEST=${LLVM_DEV_DIR}/../prefix
+
+if test x$DEST = x; then
+	DEST=${LLVM_DEV_DIR}/../install
+fi
+
 echo "Installing into ${DEST}"
 
 BUILDDIR=$(readlink -f ${BUILDDIR:=build})
@@ -18,6 +44,11 @@ echo BUILDDIR=${BUILDDIR}
 echo SRCDIR=${SRCDIR}
 # JOBS=${JOBS:-j8} # not required for Ninja
 
-make -f ${LLVM_DEV_DIR}/Makefile BUILD_TYPE=$BUILD_TYPE \
-    DEST=$DEST SRCDIR=$SRCDIR BUILDDIR=$BUILDDIR THREAD=$JOBS all
+echo "::::: Building :::::"
 
+make -f ${LLVM_DEV_DIR}/Makefile BUILD_TYPE=$BUILD_TYPE \
+    DEST=$DEST SRCDIR=$SRCDIR BUILDDIR=$BUILDDIR THREAD=$JOBS \
+    NINJA=$NINJA CMAKE=$CMAKE \
+    all
+
+echo "::::: DONE :::::"
