@@ -3,7 +3,7 @@ THIS_MAKEFILE_PATH = $(abspath $(lastword $(MAKEFILE_LIST)))
 LLVM_DEV_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
 
 # Retrieve all sources from this repo's parent
-REPO ?= $(error "Missing REPO: root of sx-aurora-dev llvm repositories.")#  $(dir $(shell cd ${LLVM_DEV_DIR} && git config remote.origin.url))
+REPOS ?= $(error "Missing REPOS: root of sx-aurora-dev llvm repositories.")#  $(dir $(shell cd ${LLVM_DEV_DIR} && git config remote.origin.url))
 BRANCH ?= $(error "Missing BRANCH: branches to build installation from") # hpce/develop)
 BUILD_TYPE = Debug
 BUILD_TARGET = "VE;X86"
@@ -46,7 +46,6 @@ musl:
 	make TARGET=ve-linux-musl all
 
 check-source:
-	echo ${REPO}
 	@test -d ${SRCDIR} || echo Need to prepare source code by \
 	    \"make shallow\"
 	@test -d ${SRCDIR} || exit 1
@@ -143,11 +142,11 @@ check-openmp: openmp
 	cd openmp && ${NINJA} ${THREADS} check-openmp
 
 shallow:
-	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
+	REPOS=${REPOS} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
 	    ${LLVM_DEV_DIR}/scripts/clone-source.sh --depth 1
 
 deep:
-	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
+	REPOS=${REPOS} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
 	    ${LLVM_DEV_DIR}/scripts/clone-source.sh
 
 shallow-update:

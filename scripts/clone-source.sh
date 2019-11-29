@@ -3,12 +3,12 @@
 OPT="$@"
 
 # Check target $REPO and remove trailing '/' from $REPO
-case x"$REPO" in
-x) echo Please specify target repository by REPO environment variable
+case x"$REPOS" in
+x) echo Please specify target repository by REPOS environment variable
    exit 1;;
 *) ;;
 esac
-REPO=`echo $REPO | sed -e 's:/$::'`
+REPOS=`echo $REPOS | sed -e 's:/$::'`
 
 # Check target $BRANCH and add it to $OPT if it exists
 case x"$BRANCH" in
@@ -19,5 +19,5 @@ esac
 mkdir -p $SRCDIR
 cd $SRCDIR
 
-test -d llvm-project || git clone --recurse-submodules ${REPO}/llvm-project.git llvm-project ${OPT}
-test -d llvm-project/llvm/tools/rv || git clone --recurse-submodules ${REPO}/rv.git llvm-project/llvm/tools/rv ${OPT}
+test -d llvm-project || git clone --recurse-submodules ${REPOS}/llvm-project.git llvm-project ${OPT}
+test -d llvm-project/llvm/tools/rv || git clone --recurse-submodules ${REPOS}/rv.git llvm-project/llvm/tools/rv ${OPT}
