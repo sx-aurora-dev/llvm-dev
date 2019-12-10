@@ -5,7 +5,6 @@ $CMAKE -G Ninja \
   -DLLVM_TARGETS_TO_BUILD="$TARGET" \
   -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;libunwind;compiler-rt" \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=on \
-  -DLLVM_CXX_STD="c++14" \
   -DBUILD_SHARED_LIBS=on \
   -DCMAKE_INSTALL_PREFIX=$DEST \
   -DRV_ENABLE_SLEEF=on \
