@@ -5,7 +5,7 @@ LLVM_DEV_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
 # Retrieve all sources from this repo's parent
 REPOS ?= $(error "Missing REPOS: root of sx-aurora-dev llvm repositories.")#  $(dir $(shell cd ${LLVM_DEV_DIR} && git config remote.origin.url))
 BRANCH ?= $(error "Missing BRANCH: branches to build installation from") # hpce/develop)
-BUILD_TYPE = Debug
+BUILD_TYPE ?= $(error "Missing BUILD_TYPE: Release|RelWithDebInf|Debug") # Debug
 BUILD_TARGET = "VE;X86"
 TARGET = ve-linux
 OMPARCH = ve
