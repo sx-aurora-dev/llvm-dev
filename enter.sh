@@ -6,7 +6,7 @@ if [ -n "${INSIDE_SXAT_ENV}" ]; then
 fi
 
 export ENV_ROOT=${PWD}
-declare -a PrefixArray=("${PWD}/build/build" "${PWD}/prefix")
+declare -a PrefixArray=("${PWD}/build/build" "${PWD}/install")
 
 for Prefix in "${PrefixArray[@]}"; do
   echo "Adding prefix ${Prefix}"
