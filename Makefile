@@ -91,7 +91,7 @@ compiler-rt:
 # enable sanitizer for VE yet.
 check-compiler-rt: compiler-rt
 	cd compiler-rt && ${NINJA} ${THREADS} check-builtins
-	cd compiler-rt && ${NINJA} ${THREADS} check-sanitizer
+#	cd compiler-rt && ${NINJA} ${THREADS} check-compiler-rt (will check CRT)
 
 libunwind:
 	mkdir -p ${UNWIND_BUILDDIR}
