@@ -7,7 +7,7 @@ REPO = $(dir $(shell cd ${LLVM_DEV_DIR} && git config remote.origin.url))
 BRANCH = develop
 BUILD_TYPE = Release
 BUILD_TARGET = "VE;X86"
-TARGET = ve-linux
+TARGET = ve-linux-gnu
 OMPARCH = ve
 
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
