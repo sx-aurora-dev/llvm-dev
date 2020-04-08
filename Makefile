@@ -14,10 +14,7 @@ OMPARCH = ve
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
 DEST = ${LLVM_DEV_DIR}/install
 DBG_DEST = ${LLVM_DEV_DIR}/install-debug
-SRCDIR = ${LLVM_DEV_DIR}
-# LLVM_SRCDIR is not modifiable since those are
-# hard-coded in scripts.
-LLVM_SRCDIR = ${SRCDIR}/llvm-project/llvm
+SRCDIR = ${LLVM_DEV_DIR}/llvm-project
 BUILDDIR = ${LLVM_DEV_DIR}
 LLVM_BUILDDIR = ${BUILDDIR}/build
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
@@ -172,8 +169,7 @@ clean:
 
 distclean: clean
 	${RM} -rf ${DEST}
-#	${RM} -rf ${LLVM_SRCDIR}
-#	-${RMDIR} ${SRCDIR}
+#	${RM} -rf ${SRCDIR}
 
 FORCE:
 

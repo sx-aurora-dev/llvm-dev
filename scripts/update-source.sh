@@ -37,4 +37,4 @@ function update() {
   git reset --hard origin/$BRANCH
 }
 
-cd $SRCDIR/llvm-project; update
+cd $SRCDIR; update

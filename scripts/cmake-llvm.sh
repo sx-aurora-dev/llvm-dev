@@ -6,4 +6,4 @@ $CMAKE -G Ninja \
   -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="$EXP_TARGET" \
   -DLLVM_ENABLE_PROJECTS="clang;compiler-rt;libcxx;libcxxabi;libunwind;openmp" \
   -DCMAKE_INSTALL_PREFIX=$DEST \
-  $SRCDIR/llvm-project/llvm
+  $SRCDIR/llvm

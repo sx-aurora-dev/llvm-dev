@@ -16,7 +16,4 @@ x) ;;
 *) OPT="-b $BRANCH $OPT";;
 esac
 
-mkdir -p $SRCDIR
-cd $SRCDIR
-
-test -d llvm-project || git clone $REPO/llvm-project.git llvm-project $OPT
+test -d llvm-project || git clone $REPO/llvm-project.git $SRCDIR  $OPT

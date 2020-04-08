@@ -8,6 +8,7 @@ if test x$REPO = x; then
 fi
 
 SRCDIR=$(readlink -f ${SRCDIR:=src})
+SRCDIR=$SRCDIR/llvm-project
 
 LLVM_DEV_DIR=$(dirname $(readlink -f $0))
 

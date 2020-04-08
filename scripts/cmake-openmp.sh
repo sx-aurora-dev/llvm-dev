@@ -16,7 +16,7 @@ $CMAKE -G Ninja \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
   -DLIBOMP_ARCH="$OMPARCH" \
   -DOPENMP_LLVM_TOOLS_DIR=$TOOLDIR \
-  $SRCDIR/llvm-project/openmp
+  $SRCDIR/openmp
 
 # Modify lit.site.cfg to test on VE
 sed -e 's:test_openmp_flags = ":test_openmp_flags = "-target ve-linux -frtlib-add-rpath -ldl :' \

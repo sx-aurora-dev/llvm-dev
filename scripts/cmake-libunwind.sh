@@ -17,9 +17,9 @@ $CMAKE -G Ninja \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_C_FLAGS="-nostdlib" \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
-  -DLIBUNWIND_LIBCXX_PATH=$SRCDIR/llvm-project/libcxx \
-  -DLLVM_PATH=$SRCDIR/llvm-project/llvm \
-  $SRCDIR/llvm-project/libunwind
+  -DLIBUNWIND_LIBCXX_PATH=$SRCDIR/libcxx \
+  -DLLVM_PATH=$SRCDIR/llvm \
+  $SRCDIR/libunwind
 
 # Modify lit.site.cfg to pass installed libraries' path
 sed -e 's:^config.test_linker_flags.*$:config.test_linker_flags        = "-L'$RESDIR'/lib/linux/ve -Wl,-rpath,'$RESDIR'/lib/linux/ve":' \

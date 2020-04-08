@@ -23,4 +23,4 @@ $CMAKE -G Ninja \
   -DCOMPILER_RT_INCLUDE_TESTS=ON \
   -DCOMPILER_RT_TEST_COMPILER=$DEST/bin/clang \
   -DCOMPILER_RT_TEST_COMPILER_CFLAGS="-target $TARGET $OPTFLAGS" \
-  $SRCDIR/llvm-project/compiler-rt 
+  $SRCDIR/compiler-rt 
