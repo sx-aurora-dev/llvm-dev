@@ -119,7 +119,7 @@ libcxxabi:
 	cd ${CXXABI_BUILDDIR} && ${NINJA} ${THREADS} install
 
 check-libcxxabi: libcxxabi
-	cd libcxxabi && ${NINJA} ${THREADS} check-libcxxabi
+	cd libcxxabi && ${NINJA} ${THREADS} check-cxxabi
 
 libcxx:
 	mkdir -p ${CXX_BUILDDIR}
@@ -131,7 +131,7 @@ libcxx:
 	cd ${CXX_BUILDDIR} && ${NINJA} ${THREADS} install
 
 check-libcxx: libcxx
-	cd libcxx && ${NINJA} ${THREADS} check-libcxx
+	cd libcxx && ${NINJA} ${THREADS} check-cxx
 
 openmp:
 	mkdir -p ${OPENMP_BUILDDIR}
