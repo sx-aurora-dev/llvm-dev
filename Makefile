@@ -14,6 +14,7 @@ OMPARCH = ve
 NINJA?=ninja-build
 CMAKE?=cmake3
 
+SOTOC_DEFAULT_COMPILER ?= $(error "Missing SOTOC_DEFAULT_COMPILER: Default option to pass to -fopenmp-nec-compiler")
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
 DEST = ${LLVM_DEV_DIR}/install
 SRCDIR = ${LLVM_DEV_DIR}
@@ -57,7 +58,7 @@ check-source:
 cmake:
 	mkdir -p ${LLVM_BUILDDIR}
 	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
-	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
+	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} SOTOC_DEFAULT_COMPILER=${SOTOC_DEFAULT_COMPILER} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
 
 build:
