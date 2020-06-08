@@ -28,6 +28,7 @@ RESDIR = ${DEST}/lib/clang/11.0.0/
 LIBSUFFIX = /linux/ve/
 #CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3
+COMPILER_RT_TEST_OPTFLAGS = -O0
 # llvm test tools are not installed, so need to specify them independently
 TOOLDIR = ${LLVM_BUILDDIR}/bin
 
@@ -86,6 +87,7 @@ compiler-rt:
 	mkdir -p ${CMPRT_BUILDDIR}
 	cd ${CMPRT_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
+	    COMPILER_RT_TEST_OPTFLAGS="${COMPILER_RT_TEST_OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-compiler-rt.sh
