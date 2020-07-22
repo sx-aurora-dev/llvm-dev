@@ -93,5 +93,6 @@ def clean_patch(in_path, out_path):
         print("DEFINE {}".format(out_reg))
         continue
 
-for in_file in glob(sys.argv[1]):
-  clean_patch(in_file, in_file)
+for pattern in sys.argv[1:]:
+  for in_file in glob(pattern):
+    clean_patch(in_file, in_file)
