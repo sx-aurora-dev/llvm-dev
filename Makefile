@@ -43,6 +43,9 @@ NINJA = ninja-build
 THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
+# Tag the build
+CLANG_VENDOR?=llvm-ve-rv-dev
+
 all: check-source cmake install libraries
 libraries: compiler-rt libunwind libcxxabi libcxx openmp
 
@@ -58,6 +61,7 @@ cmake:
 	mkdir -p ${LLVM_BUILDDIR}
 	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
+	    CLANG_VENDOR=${CLANG_VENDOR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
 
 build:

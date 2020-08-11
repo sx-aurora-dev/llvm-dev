@@ -11,4 +11,5 @@ $CMAKE -G Ninja \
   -DRV_ENABLE_SLEEF=on \
   -DRV_ENABLE_VP=on \
   -DRV_ENABLE_CRT=off \
+  -DCLANG_VENDOR=${CLANG_VENDOR} \
   $SRCDIR/llvm-project/llvm
