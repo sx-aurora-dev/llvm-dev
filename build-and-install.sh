@@ -19,7 +19,7 @@ NINJA=$(find_tool "ninja-build" "ninja")
 echo "Using ninja at ${NINJA}"
 
 declare -a CMakeToolArray=("cmake3" "cmake")
-CMAKE=$(find_tool "cmake3" "cmake")
+CMAKE="cmake" #$(find_tool "cmake3" "cmake")
 echo "Using cmake at ${CMAKE}"
 
 

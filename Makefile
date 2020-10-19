@@ -12,7 +12,7 @@ OMPARCH = ve
 
 # tools
 NINJA?=ninja-build
-CMAKE?=cmake3
+CMAKE?=cmake
 
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
 DEST = ${LLVM_DEV_DIR}/install
@@ -29,7 +29,7 @@ CXXABI_BUILDDIR = ${BUILDDIR}/libcxxabi
 CXX_BUILDDIR = ${BUILDDIR}/libcxx
 OPENMP_BUILDDIR = ${BUILDDIR}/openmp
 # RESDIR requires trailing '/'.
-RESDIR = ${DEST}/lib/clang/11.0.0/
+RESDIR = ${DEST}/lib/clang/12.0.0/
 LIBSUFFIX = /linux/ve/
 #CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3
@@ -38,8 +38,6 @@ TOOLDIR = ${LLVM_BUILDDIR}/bin
 
 RM = rm
 RMDIR = rmdir
-CMAKE = cmake3
-NINJA = ninja-build
 THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
