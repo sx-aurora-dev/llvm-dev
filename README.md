@@ -23,15 +23,15 @@ Build Procedure
 
 1. Clone this repository:
 
-    $ git clone <this repository>
+    `$ git clone <this repository>`
 
-2. Clone all repositories of LLVM for SX-Aurora. The script expects the required git repositories to be available at <GITROOT> and it will checkout the branch <BRANCH> of all of them. For example, if your vector host connects to github, use `https://github.com/sx-aurora-dev` and `hpce/develop` as the <BRANCH>.
+2. Clone all repositories of LLVM for SX-Aurora. The script expects the required git repositories to be available at `<GITROOT>` and it will checkout the branch `<BRANCH>` of all of them. For example, if your vector host connects to github, use `https://github.com/sx-aurora-dev` as `<GITROOT>` and `hpce/develop` as the `<BRANCH>`.
 
-    $ ./llvm-dev/clone.sh <GITROOT> <BRANCH>
+    `$ ./llvm-dev/clone.sh <GITROOT> <BRANCH>`
 
 3. Start the build and install process. The environment variable `BUILD_TYPE` determines how all cmake invocations in the build procedure are configured (either `Debug` or `Release`).
 
-    $ BUILD_TYPE=Release ./llvm-dev/build-and-install.sh <install directory>
+    `$ BUILD_TYPE=Release ./llvm-dev/build-and-install.sh <install directory>`
 
 You can re-run this script to re-build and re-install everying if you made changes to your local copy.
 When the script has finished, you will find the following directory structure:
