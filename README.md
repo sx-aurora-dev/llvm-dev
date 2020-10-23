@@ -4,31 +4,26 @@ Easy to use developing environment for LLVM for NEC SX-Aurora VE
 This repository contains Makefile and scripts to create a developing
 environment for LLVM for NEC SX-Aurora VE.
 
-LLVM requires multiple repositories to combine and LLVM for VE requires
-multiple libraries' cross-compile.  Those are little difficult to handle
-at the beginning.  So, I made this easy to use developing environment.
+LLVM for VE requires multiple libraries' cross-compile.  Those are little
+difficult to handle at the beginning.  So, I made this easy to use developing
+environment.
 
 These are quick steps to compile LLVM for VE.  However, if you are going
 to work on LLVM for VE, I recommend to use `make` directly like explained
 later.
 
-Quick step (compile only)
+Quick step
 =========================
 
-    $ git clone <this repository>
-    $ ./llvm-dev/clone.sh
+    $ git clone <llvm-project>
+    $ git clone <llvm-dev>
     $ scl enable devtoolset-8 bash
     $ ./llvm-dev/build-and-install.sh <install directory>
-    $ ls
-    build  llvm-dev  src
 
-Source code is downloaded into `src` direcotry, then llvm is build in `build`
-directory and installed to `<install direcotry>`.
-
+llvm is built in `build` directory and installed to `<install direcotry>`.
 You can change the directories and build type as below.
 
-    $ SRCDIR=src2 ./llvm-dev/clone.ch
-    $ SRCDIR=src2 BUILD_DIR=build-debug BUILD_TYPE=Debug ./llvm-dev/build-and-install.sh ~/.local-debug
+    $ SRCDIR=<path to llvm-project> BUILDDIR=build-debug BUILD_TYPE=Debug ./llvm-dev/build-and-install.sh ~/.local-debug
 
 Prerequisites
 =============

@@ -10,16 +10,22 @@ DEST=$(readlink -f $1)
 shift
 
 BUILDDIR=$(readlink -f ${BUILDDIR:=build})
-SRCDIR=$(readlink -f ${SRCDIR:=src})
-SRCDIR=$SRCDIR/llvm-project
+SRCDIR=$(readlink -f ${SRCDIR:=llvm-project})
 
 LLVM_DEV_DIR=$(dirname $(readlink -f $0))
 
-#echo LLVM_DEV_DIR=$LLVM_DEV_DIR
 echo BUILD_TYPE=${BUILD_TYPE:=Release}
-echo BUILDDIR=${BUILDDIR}
 echo SRCDIR=${SRCDIR}
+echo BUILDDIR=${BUILDDIR}
+echo DEST=${DEST}
+echo JOBS=${JOBS}
 JOBS=${JOBS:-j8}
+
+read -p 'OK? (y/N): ' yn
+case "${yn}" in
+        [yY]) ;;
+        *) echo abort; exit ;;
+esac
 
 make -f ${LLVM_DEV_DIR}/Makefile BUILD_TYPE=$BUILD_TYPE \
     DEST=$DEST SRCDIR=$SRCDIR BUILDDIR=$BUILDDIR THREAD=$JOBS all
