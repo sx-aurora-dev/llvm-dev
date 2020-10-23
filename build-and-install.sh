@@ -27,11 +27,14 @@ echo "Using cmake at ${CMAKE}"
 # pick installation prefix
 LLVM_DEV_DIR=$(dirname $(readlink -f $0))
 
+DEST=$1
 if test x$DEST = x; then
-	DEST=${LLVM_DEV_DIR}/../install
+  DEST=${LLVM_DEV_DIR}/../install
 fi
 
-echo "Installing into ${DEST}"
+# Convert to an absolute path
+DEST=$(realpath -m ${DEST})
+echo "Installing LLVM for SX-Aurora to ${DEST}"
 
 BUILDDIR=$(readlink -f ${BUILDDIR:=build})
 SRCDIR=$(readlink -f ${SRCDIR:=src})

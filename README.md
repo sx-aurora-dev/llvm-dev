@@ -31,8 +31,9 @@ Build Procedure
 
 3. Start the build and install process. The environment variable `BUILD_TYPE` determines how all cmake invocations in the build procedure are configured (either `Debug` or `Release`).
 
-    `$ BUILD_TYPE=Release ./llvm-dev/build-and-install.sh <install directory>`
+    `$ BUILD_TYPE=Release ./llvm-dev/build-and-install.sh`
 
+This will install LLVM for SX-Aurora to `./install` .
 You can re-run this script to re-build and re-install everying if you made changes to your local copy.
 When the script has finished, you will find the following directory structure:
 
@@ -42,7 +43,7 @@ When the script has finished, you will find the following directory structure:
 Source code is downloaded into `src` direcotry, then llvm is build in `build`
 directory and installed to `install`.
 
-4. To make all binaries and libraries in the just-built `install` folder available in your bash, call `source llvm-dev/enter.sh`.
+4. To active LLVM for SX-Aurora in your shell call `source llvm-dev/enter.sh`.
 
 You can now run `clang --target=ve-linux` to compile C++ code with LLVM for SX-Aurora.
 
