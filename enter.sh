@@ -1,6 +1,7 @@
 #! /usr/bin/env bash
+set -e
 
-if [ -n "${INSIDE_SXAT_ENV}" ]; then
+if [ -n "${INSIDE_SXAT_ENV-}" ]; then
 	echo "Already inside LLVM environment! (INSIDE_SXAT_ENV is set)"
 	return;
 fi
