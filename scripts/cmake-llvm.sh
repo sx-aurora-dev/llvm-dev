@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# RTTI required for AnyDSL
 $CMAKE -G Ninja \
   -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
   -DLLVM_TARGETS_TO_BUILD="$TARGET" \
@@ -11,6 +12,7 @@ $CMAKE -G Ninja \
   -DRV_ENABLE_SLEEF=on \
   -DRV_ENABLE_VP=on \
   -DRV_ENABLE_CRT=off \
+  -DLLVM_ENABLE_RTTI=on \
   -DCLANG_VENDOR=${CLANG_VENDOR} \
   -DCLANG_REPOSITORY_STRING=https://github.com/sx-aurora-dev/llvm-project.git \
   $SRCDIR/llvm-project/llvm
