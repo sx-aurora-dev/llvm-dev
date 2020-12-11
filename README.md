@@ -3,6 +3,7 @@ Development environment for LLVM for NEC SX-Aurora VE
 
 These scripts build a development environment for LLVM for SX-Aurora.
 The scripts have been tailored to work on a typical x86-64 vector host.
+The main entry point to clone, build and install is the Makefile.
 
 
 Pre-requesites
@@ -13,6 +14,7 @@ The scripts need the following Software Collections on your vector host system:
 * devtoolset-9
 * rh-python36
 * rh-git28
+* ninja-build
 
 Install the packages and enter a shell with the packages activated. Eg, by calling:
 
@@ -25,13 +27,13 @@ Build Procedure
 
     `$ git clone <this repository>`
 
-2. Clone all repositories of LLVM for SX-Aurora. The script expects the required git repositories to be available at `<GITROOT>` and it will checkout the branch `<BRANCH>` of all of them. For example, if your vector host connects to github, use `https://github.com/sx-aurora-dev` as `<GITROOT>` and `hpce/develop` as the `<BRANCH>`.
+2. Clone all repositories of LLVM for SX-Aurora. The Makefile expects the required git repositories to be available at `<REPOS>` and it will checkout the branch `<BRANCH>` of all of them. For example, if your vector host connects to github, use `https://github.com/sx-aurora-dev` as `<REPOS>` and `hpce/develop` as the `<BRANCH>`. `<BUILD_TYPE>` is passed on to configure the LLVM builds.
 
-    `$ ./llvm-dev/clone.sh <GITROOT> <BRANCH>`
+    `$ REPOS=<REPO> BRANCH=<BRANCH> BUILD_TYPE=<BUILD_TYPE} make -f llvm-dev/Makefile clone
 
 3. Start the build and install process. The environment variable `BUILD_TYPE` determines how all cmake invocations in the build procedure are configured (either `Debug` or `Release`).
 
-    `$ BUILD_TYPE=Release ./llvm-dev/build-and-install.sh`
+    `$ REPOS=<REPO> BRANCH=<BRANCH> BUILD_TYPE=<BUILD_TYPE} make -f llvm-dev/Makefile install
 
 This will install LLVM for SX-Aurora to `./install` .
 You can re-run this script to re-build and re-install everying if you made changes to your local copy.
