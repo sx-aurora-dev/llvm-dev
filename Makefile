@@ -97,7 +97,7 @@ build-stage2: configure-stage2
 
 configure-stage2: install-stage1
 	mkdir -p ${BUILDDIR_STAGE_2}
-	cd ${BUILDDIR_STAGE_2} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm -DBOOTSTRAP_PREFIX=${INSTALL_PREFIX} -C ${CACHES}/VectorEngine-Stage-2.cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
+	cd ${BUILDDIR_STAGE_2} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm -DLLVM_ENABLE_RTTI=on -DBOOTSTRAP_PREFIX=${INSTALL_PREFIX} -C ${CACHES}/VectorEngine-Stage-2.cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
 
 
 # Stage 1 steps
