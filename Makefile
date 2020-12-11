@@ -1,9 +1,59 @@
 THIS_MAKEFILE_PATH = $(abspath $(lastword $(MAKEFILE_LIST)))
-# LLVM_DEV_DIR requires to use an abosolute path
-LLVM_DEV_DIR = $(abspath $(dir ${THIS_MAKEFILE_PATH}))
+LLVMDEV = $(abspath $(dir ${THIS_MAKEFILE_PATH})/)
+WSPACE?=$(PWD)
+INSTALL_PREFIX = ${WSPACE}/install
+BUILDDIR = ${WSPACE}/build
+SCRIPTS=${LLVMDEV}/scripts
+
+all: help
+
+help:
+	@echo "=== Makefile for the LLVM for SX-Aurora stack ==="
+	@echo ""
+	@echo "== MANDATORY VARIABLES =="
+	@echo ""
+	@echo "You need to set these three variables to make any target:"
+	@echo ""
+	@echo "    REPOS=<path-or-url/to/repos>"
+	@echo "        This is common prefix of the path/url of the repos."
+	@echo "        Currently: ${REPOS}"
+	@echo ""
+	@echo "    BRANCH=<branch>"
+	@echo "        The branch name that will be checked out on all repos."
+	@echo "        Currently: ${BRANCH}"
+	@echo ""
+	@echo "    BUILD_TYPE=Release|Debug"
+	@echo "        The build type."
+	@echo "        Currently: ${BUILD_TYPE}"
+	@echo ""
+	@echo "== OPTIONAL VARIABLES =="
+	@echo ""
+	@echo "    WSPACE=<workspace_path>"
+	@echo "        The path where everything is checked out, build and installed."
+	@echo "        Currently: ${WSPACE}" 
+	@echo ""
+	@echo ""
+	@echo "== TARGETS =="
+	@echo ""
+	@echo "    make clone[-deep or -shallow]"
+	@echo "        Deep (default) or shallow clone all required repos."
+	@echo ""
+	@echo "    make update[-deep or -shallow]"
+	@echo "        Deep (default) or shallow update the repos."
+	@echo ""
+	@echo "    make install:"
+	@echo "        Build and install the stack to ${INSTALL_PREFIX}"
+	@echo ""
+	@echo ""
+	@echo "== DIRECTORIES =="
+	@echo ""
+	@echo "    Workspace path: ${WSPACE}"
+	@echo "    Build directory: ${BUILDDIR}"
+	@echo "    Install prefix: ${INSTALL_PREFIX}"
+
 
 # Retrieve all sources from this repo's parent
-REPOS ?= $(error "Missing REPOS: root of sx-aurora-dev llvm repositories.")#  $(dir $(shell cd ${LLVM_DEV_DIR} && git config remote.origin.url))
+REPOS ?= $(error "Missing REPOS: root of sx-aurora-dev llvm repositories.")#  $(dir $(shell cd ${WSPACE} && git config remote.origin.url))
 BRANCH ?= $(error "Missing BRANCH: branches to build installation from") # hpce/develop)
 BUILD_TYPE ?= $(error "Missing BUILD_TYPE: Release|RelWithDebInf|Debug") # Debug
 BUILD_TARGET = "VE;X86"
@@ -14,24 +64,7 @@ OMPARCH = ve
 NINJA?=ninja-build
 CMAKE?=cmake
 
-# DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
-DEST = ${LLVM_DEV_DIR}/install
-SRCDIR = ${LLVM_DEV_DIR}
-# LLVM_SRCDIR is not modifiable since those are
-# hard-coded in scripts.
-LLVM_SRCDIR = ${SRCDIR}/llvm-project/llvm
-BUILDDIR = ${LLVM_DEV_DIR}
-LLVM_BUILDDIR = ${BUILDDIR}/build
-LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
-CMPRT_BUILDDIR = ${BUILDDIR}/compiler-rt
-UNWIND_BUILDDIR = ${BUILDDIR}/libunwind
-CXXABI_BUILDDIR = ${BUILDDIR}/libcxxabi
-CXX_BUILDDIR = ${BUILDDIR}/libcxx
-OPENMP_BUILDDIR = ${BUILDDIR}/openmp
 # RESDIR requires trailing '/'.
-RESDIR = ${DEST}/lib/clang/12.0.0/
-LIBSUFFIX = /linux/ve/
-#CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3
 # llvm test tools are not installed, so need to specify them independently
 TOOLDIR = ${LLVM_BUILDDIR}/bin
@@ -41,141 +74,72 @@ RMDIR = rmdir
 THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
+LLVMPROJECT=${WSPACE}/llvm-project
+CACHES=${LLVMPROJECT}/clang/cmake/caches
+
 # Tag the build
 CLANG_VENDOR?=llvm-ve-rv-dev
 
-all: check-source cmake install libraries
-libraries: compiler-rt libunwind libcxxabi libcxx openmp
+BUILDDIR_STAGE_1=${BUILDDIR}/build_stage_1
+BUILDDIR_STAGE_2=${BUILDDIR}/build_stage_2
 
-musl:
-	make TARGET=ve-linux-musl all
+install: install-stage2
 
-check-source:
-	@test -d ${SRCDIR} || echo Need to prepare source code by \
-	    \"make shallow\"
-	@test -d ${SRCDIR} || exit 1
+# Stage 2 steps
+check-stage2: build-stage2
+	cd ${BUILDDIR_STAGE_2} && ${NINJA} check-all
 
-cmake:
-	mkdir -p ${LLVM_BUILDDIR}
-	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
-	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
-	    CLANG_VENDOR=${CLANG_VENDOR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
+install-stage2: build-stage2
+	cd ${BUILDDIR_STAGE_2} && ${NINJA} install
 
-build:
-	@test -d ${LLVM_BUILDDIR} || echo Need to cmake first by \"make cmake\"
-	@test -d ${LLVM_BUILDDIR} || exit 1
-	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS}
+build-stage2: configure-stage2
+	cd ${BUILDDIR_STAGE_2} && ${NINJA}
 
-install: build
-	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} install
+configure-stage2: install-stage1
+	mkdir -p ${BUILDDIR_STAGE_2}
+	cd ${BUILDDIR_STAGE_2} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm -DBOOTSTRAP_PREFIX=${INSTALL_PREFIX} -C ${CACHES}/VectorEngine-Stage-2.cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
 
-installall: install compiler-rt libunwind libcxxabi libcxx openmp
 
-build-debug:
-	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} BUILD_TYPE=Debug \
-	    ${MFLAGS} cmake
-	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} BUILD_TYPE=Debug \
-	    ${MFLAGS} build
+# Stage 1 steps
+check-stage1: build-stage1
+	cd ${BUILDDIR_STAGE_1} && ${NINJA} check-all
 
-check-llvm: build
-	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} check-llvm
+install-stage1: build-stage1
+	cd ${BUILDDIR_STAGE_1} && ${NINJA} install
 
-check-clang: build
-	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} check-clang
+build-stage1: configure-stage1
+	cd ${BUILDDIR_STAGE_1} && ${NINJA}
 
-compiler-rt:
-	mkdir -p ${CMPRT_BUILDDIR}
-	cd ${CMPRT_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
-	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-compiler-rt.sh
-	cd ${CMPRT_BUILDDIR} && ${NINJA} ${THREADS} install
+configure-stage1:
+	mkdir -p ${BUILDDIR_STAGE_1}
+	cd ${BUILDDIR_STAGE_1} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm -C ${CACHES}/VectorEngine-Stage-1.cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
 
-# This target is not working at the moment since we don't
-# enable sanitizer for VE yet.
-check-compiler-rt: compiler-rt
-	cd compiler-rt && ${NINJA} ${THREADS} check-builtins
-	cd compiler-rt && ${NINJA} ${THREADS} check-sanitizer
+clone-shallow:
+	REPOS=${REPOS} BRANCH=${BRANCH} WSPACE=${WSPACE} \
+	    ${SCRIPTS}/clone-source.sh --depth 1
 
-libunwind:
-	mkdir -p ${UNWIND_BUILDDIR}
-	cd ${UNWIND_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
-	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-libunwind.sh
-	cd ${UNWIND_BUILDDIR} && ${NINJA} ${THREADS} install
+clone: clone-deep
 
-check-libunwind: libunwind
-	cd libunwind && ${NINJA} ${THREADS} check-unwind
+clone-deep:
+	REPOS=${REPOS} BRANCH=${BRANCH} WSPACE=${WSPACE} \
+	    ${SCRIPTS}/clone-source.sh
 
-libcxxabi:
-	mkdir -p ${CXXABI_BUILDDIR}
-	cd ${CXXABI_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
-	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-libcxxabi.sh
-	cd ${CXXABI_BUILDDIR} && ${NINJA} ${THREADS} install
+update: update-deep
 
-check-libcxxabi: libcxxabi
-	cd libcxxabi && ${NINJA} ${THREADS} check-libcxxabi
+update-shallow:
+	BRANCH=${BRANCH} WSPACE=${WSPACE} \
+	    ${SCRIPTS}/update-source.sh --depth 1
 
-libcxx:
-	mkdir -p ${CXX_BUILDDIR}
-	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
-	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
-	cd ${CXX_BUILDDIR} && ${NINJA} ${THREADS} install
-
-check-libcxx: libcxx
-	cd libcxx && ${NINJA} ${THREADS} check-libcxx
-
-openmp:
-	mkdir -p ${OPENMP_BUILDDIR}
-	cd ${OPENMP_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
-	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} OMPARCH=${OMPARCH} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-openmp.sh
-	cd ${OPENMP_BUILDDIR} && ${NINJA} ${THREADS} install
-
-check-openmp: openmp
-	cd openmp && ${NINJA} ${THREADS} check-openmp
-
-shallow:
-	REPOS=${REPOS} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${LLVM_DEV_DIR}/scripts/clone-source.sh --depth 1
-
-deep:
-	REPOS=${REPOS} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${LLVM_DEV_DIR}/scripts/clone-source.sh
-
-shallow-update:
-	BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${LLVM_DEV_DIR}/scripts/update-source.sh --depth 1
-
-deep-update:
-	BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
-	    ${LLVM_DEV_DIR}/scripts/update-source.sh
+update-deep:
+	BRANCH=${BRANCH} WSPACE=${WSPACE} \
+	    ${SCRIPTS}/update-source.sh
 
 clean:
-	${RM} -rf ${LLVM_BUILDDIR} ${CMPRT_BUILDDIR} ${UNWIND_BUILDDIR} \
-	    ${CXXABI_BUILDDIR} ${CXX_BUILDDIR} ${OPENMP_BUILDDIR} \
-	    ${LLVMDBG_BUILDDIR}
-	-${RMDIR} ${BUILDDIR}
-
-distclean: clean
-	${RM} -rf ${DEST}
-#	${RM} -rf ${LLVM_SRCDIR}
-#	-${RMDIR} ${SRCDIR}
+	${RM} -rf ${BUILDDIR_STAGE_1} ${BUILDDIR_STAGE_2}
 
 FORCE:
 
-.PHONY: FORCE shallow deep clean dist clean check-source cmake build install \
-	libraries compiler-rt libunwind libcxxabi libcxx openmp \
-	build-debug musl installall
+.PHONY: FORCE clone-shallow clone-deep update-shallow update-deep \
+	build-stage1 configure-stage1 install-stage1 \
+	build-stage2 configure-stage2 install-stage2 \
+	all help
