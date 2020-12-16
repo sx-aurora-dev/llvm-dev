@@ -1,7 +1,7 @@
 THIS_MAKEFILE_PATH = $(abspath $(lastword $(MAKEFILE_LIST)))
 LLVMDEV = $(abspath $(dir ${THIS_MAKEFILE_PATH})/)
 WSPACE?=$(PWD)
-INSTALL_PREFIX = ${WSPACE}/install
+INSTALL_PREFIX?=${WSPACE}/install
 BUILDDIR = ${WSPACE}/build
 SCRIPTS=${LLVMDEV}/scripts
 
@@ -31,6 +31,10 @@ help:
 	@echo "    WSPACE=<workspace_path>"
 	@echo "        The path where everything is checked out, build and installed."
 	@echo "        Currently: ${WSPACE}" 
+	@echo ""
+	@echo "    INSTALL_PREFIX=<where_to_install"
+	@echo "        The path prefix used for installing."
+	@echo "        Currently: ${INSTALL_PREFIX}" 
 	@echo ""
 	@echo ""
 	@echo "== TARGETS =="
