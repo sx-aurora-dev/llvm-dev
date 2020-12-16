@@ -25,8 +25,11 @@ $CMAKE -G Ninja \
   -DCMAKE_C_FLAGS_RELEASE="$OPTFLAGS" \
   -DCMAKE_CXX_FLAGS="-nostdlib++" \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
+  -DLIBCXX_ENABLE_SHARED=Off \
   -DLIBCXX_USE_COMPILER_RT=True \
   $SRCDIR/llvm-project/libcxx
+
+# Disabling shared libc++ for now because of runtime issues,
 
 # Force to remove isntall path from compiled libraries.
 # cmake leave compiled directory in .so file unfortunately.
