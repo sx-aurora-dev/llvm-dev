@@ -29,11 +29,11 @@ Build Procedure
 
 2. Clone all repositories of LLVM for SX-Aurora. The Makefile expects the required git repositories to be available at `<REPOS>` and it will checkout the branch `<BRANCH>` of all of them. For example, if your vector host connects to github, use `https://github.com/sx-aurora-dev` as `<REPOS>` and `hpce/develop` as the `<BRANCH>`. `<BUILD_TYPE>` is passed on to configure the LLVM builds.
 
-    `$ REPOS=<REPO> BRANCH=<BRANCH> BUILD_TYPE=<BUILD_TYPE} make -f llvm-dev/Makefile clone
+    `$ REPOS=<REPO> BRANCH=<BRANCH> BUILD_TYPE=<BUILD_TYPE> make -f llvm-dev/Makefile clone
 
 3. Start the build and install process. The environment variable `BUILD_TYPE` determines how all cmake invocations in the build procedure are configured (either `Debug` or `Release`).
 
-    `$ REPOS=<REPO> BRANCH=<BRANCH> BUILD_TYPE=<BUILD_TYPE} make -f llvm-dev/Makefile install
+    `$ REPOS=<REPO> BRANCH=<BRANCH> BUILD_TYPE=<BUILD_TYPE> make -f llvm-dev/Makefile install
 
 This will install LLVM for SX-Aurora to `./install` .
 You can re-run this script to re-build and re-install everying if you made changes to your local copy.
