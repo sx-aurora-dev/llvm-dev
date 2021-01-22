@@ -88,6 +88,8 @@ BUILDDIR_STAGE_1=${BUILDDIR}/build_stage_1
 BUILDDIR_STAGE_2=${BUILDDIR}/build_stage_2
 BUILDDIR_STAGE_3=${BUILDDIR}/build_stage_3
 
+TMP_INSTALL_STAGE3=${BUILDDIR}/tmp_install_stage3
+
 install: install-stage3
 
 # Stage 3 steps (OpenMP for VE)
@@ -95,7 +97,9 @@ check-stage3: build-stage3
 	cd ${BUILDDIR_STAGE_3} && ${NINJA} check-all
 
 install-stage3: build-stage3
-	cp ${BUILDDIR_STAGE_3}/*.so ${INSTALL_PREFIX}/lib/ve-linux
+	cd ${BUILDDIR_STAGE_3} && ninja install
+	mkdir -p ${INSTALL_PREFIX}/lib/ve-linux
+	cp ${TMP_INSTALL_STAGE3}/lib/*.so ${INSTALL_PREFIX}/lib/ve-linux
 
 build-stage3: configure-stage3
 	cd ${BUILDDIR_STAGE_3} && ${NINJA}
@@ -103,7 +107,7 @@ build-stage3: configure-stage3
 configure-stage3: install-stage2
 	mkdir -p ${BUILDDIR_STAGE_3}
 	cd ${BUILDDIR_STAGE_3} && ${CMAKE} -G Ninja ${LLVMPROJECT}/openmp \
-		                           -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}/lib/ve-linux \
+		                           -DCMAKE_INSTALL_PREFIX=${TMP_INSTALL_STAGE3} \
 					   -DLIBOMP_ARCH=ve \
 					   -DOPENMP_FILECHECK_EXECUTABLE=${INSTALL_PREFIX}/bin/FileCheck \
 					   -DOPENMP_NOT_EXECUTABLE=${INSTALL_PREFIX}/bin/FileCheck \
