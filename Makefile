@@ -86,10 +86,36 @@ CLANG_VENDOR?=llvm-ve-rv-dev
 
 BUILDDIR_STAGE_1=${BUILDDIR}/build_stage_1
 BUILDDIR_STAGE_2=${BUILDDIR}/build_stage_2
+BUILDDIR_STAGE_3=${BUILDDIR}/build_stage_3
 
-install: install-stage2
+install: install-stage3
 
-# Stage 2 steps
+# Stage 3 steps (OpenMP for VE)
+check-stage3: build-stage3
+	cd ${BUILDDIR_STAGE_3} && ${NINJA} check-all
+
+install-stage3: build-stage3
+	cp ${BUILDDIR_STAGE_3}/*.so ${INSTALL_PREFIX}/lib/ve-linux
+
+build-stage3: configure-stage3
+	cd ${BUILDDIR_STAGE_3} && ${NINJA}
+
+configure-stage3: install-stage2
+	mkdir -p ${BUILDDIR_STAGE_3}
+	cd ${BUILDDIR_STAGE_3} && ${CMAKE} -G Ninja ${LLVMPROJECT}/openmp \
+		                           -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}/lib/ve-linux \
+					   -DLIBOMP_ARCH=ve \
+					   -DOPENMP_FILECHECK_EXECUTABLE=${INSTALL_PREFIX}/bin/FileCheck \
+					   -DOPENMP_NOT_EXECUTABLE=${INSTALL_PREFIX}/bin/FileCheck \
+					   -DLIBOMP_USE_ADAPTIVE_LOCKS=Off \
+					   -DLIBOMP_OMPT_SUPPORT=Off \
+					   -DCMAKE_CXX_COMPILER=${INSTALL_PREFIX}/bin/clang++ \
+					   -DCMAKE_C_COMPILER=${INSTALL_PREFIX}/bin/clang \
+					   -DCMAKE_CXX_FLAGS=--target=ve-linux \
+					   -DCMAKE_C_FLAGS=--target=ve-linux
+
+
+# Stage 2 steps (Self-hosting Clang, OpenMP for X86)
 check-stage2: build-stage2
 	cd ${BUILDDIR_STAGE_2} && ${NINJA} check-all
 
@@ -104,7 +130,7 @@ configure-stage2: install-stage1
 	cd ${BUILDDIR_STAGE_2} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm -DLLVM_ENABLE_RTTI=on -DBOOTSTRAP_PREFIX=${INSTALL_PREFIX} -C ${CACHES}/VectorEngine-Stage-2.cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
 
 
-# Stage 1 steps
+# Stage 1 steps (Clang++ for VH and VE)
 check-stage1: build-stage1
 	cd ${BUILDDIR_STAGE_1} && ${NINJA} check-all
 
