@@ -92,6 +92,8 @@ TMP_INSTALL_STAGE3=${BUILDDIR}/tmp_install_stage3
 
 install: install-stage3
 
+
+
 # Stage 3 steps (OpenMP for VE)
 check-stage3: build-stage3
 	cd ${BUILDDIR_STAGE_3} && ${NINJA} check-all
@@ -130,7 +132,13 @@ build-stage2: configure-stage2
 
 configure-stage2: install-stage1
 	mkdir -p ${BUILDDIR_STAGE_2}
-	cd ${BUILDDIR_STAGE_2} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm -DLLVM_ENABLE_RTTI=on -DBOOTSTRAP_PREFIX=${INSTALL_PREFIX} -C ${CACHES}/VectorEngine-Stage-2.cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
+	cd ${BUILDDIR_STAGE_2} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm \
+	       	-DLLVM_ENABLE_RTTI=on \
+	       	-DBOOTSTRAP_PREFIX=${INSTALL_PREFIX} \
+		-C ${CACHES}/VectorEngine-Stage-2.cmake \
+	       	-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+		-DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+		-DCLANG_VENDOR=${CLANG_VENDOR}
 
 
 # Stage 1 steps (Clang++ for VH and VE)
@@ -145,7 +153,11 @@ build-stage1: configure-stage1
 
 configure-stage1:
 	mkdir -p ${BUILDDIR_STAGE_1}
-	cd ${BUILDDIR_STAGE_1} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm -C ${CACHES}/VectorEngine-Stage-1.cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}
+	cd ${BUILDDIR_STAGE_1} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm \
+	       	-C ${CACHES}/VectorEngine-Stage-1.cmake \
+	       	-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
+		-DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+		-DCLANG_VENDOR=${CLANG_VENDOR}
 
 clone-shallow:
 	REPOS=${REPOS} BRANCH=${BRANCH} WSPACE=${WSPACE} \
