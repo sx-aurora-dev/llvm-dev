@@ -95,7 +95,8 @@ check-stage3: build-stage3
 	cd ${BUILDDIR_STAGE_3} && ${NINJA} check-all
 
 install-stage3: build-stage3
-	cp ${BUILDDIR_STAGE_3}/*.so ${INSTALL_PREFIX}/lib/ve-linux
+	cp ${BUILDDIR_STAGE_3}/runtime/src/*.so ${INSTALL_PREFIX}/lib/ve-linux
+	cp ${BUILDDIR_STAGE_3}/libomptarget/*.so ${INSTALL_PREFIX}/lib/ve-linux
 
 build-stage3: configure-stage3
 	cd ${BUILDDIR_STAGE_3} && ${NINJA}
