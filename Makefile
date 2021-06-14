@@ -24,7 +24,8 @@ CXXABI_BUILDDIR = ${BUILDDIR}/libcxxabi
 CXX_BUILDDIR = ${BUILDDIR}/libcxx
 OPENMP_BUILDDIR = ${BUILDDIR}/openmp
 # RESDIR requires trailing '/'.
-RESDIR = ${DEST}/lib/clang/12.0.0/
+LLVM_VERSION_MAJOR = $(shell grep 'set.*LLVM_VERSION_MAJOR  *' ${SRCDIR}/llvm/CMakeLists.txt | sed -e 's/.*LLVM_VERSION_MAJOR //' -e 's/[^0-9][^0-9]*//')
+RESDIR = ${DEST}/lib/clang/${LLVM_VERSION_MAJOR}.0.0/
 LIBSUFFIX = /linux/ve/
 #CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3
