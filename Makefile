@@ -90,6 +90,9 @@ BUILDDIR_STAGE_3=${BUILDDIR}/build_stage_3
 
 TMP_INSTALL_STAGE3=${BUILDDIR}/tmp_install_stage3
 
+CLANG_VERSION=13.0.0
+VE_RUNTIME_LIB_PATH=${INSTALL_PREFIX}/lib/clang/${CLANG_VERSION}/lib/linux/ve
+
 install: install-stage3
 
 
@@ -98,9 +101,11 @@ install: install-stage3
 check-stage3: build-stage3
 	cd ${BUILDDIR_STAGE_3} && ${NINJA} check-all
 
+
 install-stage3: build-stage3
-	cp ${BUILDDIR_STAGE_3}/runtime/src/*.so ${INSTALL_PREFIX}/lib/ve-linux
-	cp ${BUILDDIR_STAGE_3}/libomptarget/*.so ${INSTALL_PREFIX}/lib/ve-linux
+	mkdir -p ${VE_RUNTIME_LIB_PATH}
+	cp ${BUILDDIR_STAGE_3}/runtime/src/*.so ${VE_RUNTIME_LIB_PATH}
+	cp ${BUILDDIR_STAGE_3}/libomptarget/*.so ${VE_RUNTIME_LIB_PATH}
 
 build-stage3: configure-stage3
 	cd ${BUILDDIR_STAGE_3} && ${NINJA}
@@ -116,9 +121,10 @@ configure-stage3: install-stage2
 					   -DLIBOMP_OMPT_SUPPORT=Off \
 					   -DCMAKE_CXX_COMPILER=${INSTALL_PREFIX}/bin/clang++ \
 					   -DCMAKE_C_COMPILER=${INSTALL_PREFIX}/bin/clang \
-					   -DCMAKE_CXX_FLAGS=--target=ve-linux \
-					   -DCMAKE_C_FLAGS=--target=ve-linux
-
+					   -DCMAKE_CXX_FLAGS="--target=ve-linux -mllvm -rv=0" \
+					   -DCMAKE_C_FLAGS="--target=ve-linux -mllvm -rv=0" \
+                                           -DLIBOMP_HAVE_SHM_OPEN_WITH_LRT=1
+# Force linking of librt on VE.
 
 # Stage 2 steps (Self-hosting Clang, OpenMP for X86)
 check-stage2: build-stage2
@@ -138,7 +144,8 @@ configure-stage2: install-stage1
 		-C ${CACHES}/VectorEngine-Stage-2.cmake \
 	       	-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
 		-DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-		-DCLANG_VENDOR=${CLANG_VENDOR}
+		-DCLANG_VENDOR=${CLANG_VENDOR} \
+		-DLIBOMPTARGET_ENABLE_DEBUG=On
 
 
 # Stage 1 steps (Clang++ for VH and VE)
