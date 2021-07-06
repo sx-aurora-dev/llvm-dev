@@ -41,7 +41,7 @@ THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
 all: check-source cmake install libraries
-libraries: compiler-rt libunwind libcxxabi libcxx openmp
+libraries: compiler-rt libunwind libcxx-headers libcxxabi libcxx openmp
 
 musl:
 	make TARGET=ve-linux-musl all
@@ -66,7 +66,7 @@ build:
 install: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} install
 
-installall: install compiler-rt libunwind libcxxabi libcxx openmp
+installall: install compiler-rt libunwind libcxx-headers libcxxabi libcxx openmp
 
 build-debug:
 	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} DEST=${DBG_DEST} \
@@ -123,6 +123,15 @@ libcxxabi:
 
 check-libcxxabi: libcxxabi
 	cd libcxxabi && ${NINJA} ${THREADS} check-cxxabi
+
+libcxx-headers:
+	mkdir -p ${CXX_BUILDDIR}
+	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
+	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
+	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
+	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
+	cd ${CXX_BUILDDIR} && ${NINJA} ${THREADS} install-cxx-headers
 
 libcxx:
 	mkdir -p ${CXX_BUILDDIR}
