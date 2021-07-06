@@ -19,6 +19,7 @@ $CMAKE -G Ninja \
   -DLLVM_MAIN_SRC_DIR=$SRCDIR/llvm \
   -DLIBCXXABI_USE_COMPILER_RT=True \
   -DLIBCXXABI_HAS_NOSTDINCXX_FLAG=True \
+  -DLIBCXXABI_LIBCXX_INCLUDES="$RESDIR/include/c++/v1/" \
   $SRCDIR/libcxxabi
 
 # Modify lit.site.cfg to pass installed libraries' path
