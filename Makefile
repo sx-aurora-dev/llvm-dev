@@ -121,8 +121,8 @@ configure-stage3: install-stage2
 					   -DLIBOMP_OMPT_SUPPORT=Off \
 					   -DCMAKE_CXX_COMPILER=${INSTALL_PREFIX}/bin/clang++ \
 					   -DCMAKE_C_COMPILER=${INSTALL_PREFIX}/bin/clang \
-					   -DCMAKE_CXX_FLAGS="--target=ve-linux -mllvm -rv=0" \
-					   -DCMAKE_C_FLAGS="--target=ve-linux -mllvm -rv=0" \
+					   -DCMAKE_CXX_FLAGS="--target=ve-linux" \
+					   -DCMAKE_C_FLAGS="--target=ve-linux" \
                                            -DLIBOMP_HAVE_SHM_OPEN_WITH_LRT=1
 # Force linking of librt on VE.
 
