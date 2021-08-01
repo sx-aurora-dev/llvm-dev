@@ -22,7 +22,7 @@ $CMAKE -G Ninja \
   $SRCDIR/openmp
 
 # Modify lit.site.cfg to test on VE
-sed -e 's:test_openmp_flags = ":test_openmp_flags = "-target ve-linux -frtlib-add-rpath -ldl :' \
+sed -e 's:test_openmp_flags = ":test_openmp_flags = "-target ve-linux -frtlib-add-rpath -ldl -lrt :' \
     -i runtime/test/lit.site.cfg
 
 # Add -j1 to llvm-lit
