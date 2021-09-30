@@ -38,4 +38,5 @@ function update() {
 }
 
 cd ${WSPACE}/llvm-project; update
-cd ${WSPACE}/llvm-project/llvm/lib/rv; update
+# RV is a proper submodule now.
+#cd ${WSPACE}/llvm-project/llvm/lib/rv; update
