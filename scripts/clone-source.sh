@@ -18,4 +18,4 @@ esac
 
 cd ${WSPACE}
 test -d llvm-project || git clone --recurse-submodules ${REPOS}/llvm-project.git llvm-project ${OPT}
-test -d llvm-project/llvm/tools/rv || git clone --recurse-submodules ${REPOS}/rv.git llvm-project/llvm/tools/rv ${OPT}
+test -d llvm-project/llvm/lib/rv || git clone --recurse-submodules ${REPOS}/rv.git llvm-project/llvm/lib/rv ${OPT}
