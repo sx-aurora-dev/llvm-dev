@@ -1,9 +1,7 @@
 THIS_MAKEFILE_PATH = $(abspath $(lastword $(MAKEFILE_LIST)))
 LLVMDEV = $(abspath $(dir ${THIS_MAKEFILE_PATH})/)
 WSPACE?=$(PWD)
-INSTALL_PREFIX?=${WSPACE}/install
-BUILDDIR = ${WSPACE}/build
-SCRIPTS=${LLVMDEV}/scripts
+PREFIX?=${WSPACE}/install
 
 all: help
 
@@ -22,9 +20,9 @@ help:
 	@echo "        The branch name that will be checked out on all repos."
 	@echo "        Currently: ${BRANCH}"
 	@echo ""
-	@echo "    BUILD_TYPE=Release|Debug"
-	@echo "        The build type."
-	@echo "        Currently: ${BUILD_TYPE}"
+	@echo "    LLVM_BUILD_TYPE=Release|Debug"
+	@echo "        The LLVM build type."
+	@echo "        Currently: ${LLVM_BUILD_TYPE}"
 	@echo ""
 	@echo "== OPTIONAL VARIABLES =="
 	@echo ""
@@ -32,36 +30,31 @@ help:
 	@echo "        The path where everything is checked out, build and installed."
 	@echo "        Currently: ${WSPACE}" 
 	@echo ""
-	@echo "    INSTALL_PREFIX=<where_to_install"
+	@echo "    PREFIX=<where_to_install>"
 	@echo "        The path prefix used for installing."
-	@echo "        Currently: ${INSTALL_PREFIX}" 
+	@echo "        Currently: ${PREFIX}" 
 	@echo ""
 	@echo ""
 	@echo "== TARGETS =="
 	@echo ""
-	@echo "    make clone[-deep or -shallow]"
-	@echo "        Deep (default) or shallow clone all required repos."
-	@echo ""
-	@echo "    make update[-deep or -shallow]"
-	@echo "        Deep (default) or shallow update the repos."
+	@echo "    make clone CLONEOPTS=<options passed to clone>"
+	@echo "        Call 'git clone <CLONEOPTS>'."
 	@echo ""
 	@echo "    make install:"
-	@echo "        Build and install the stack to ${INSTALL_PREFIX}"
+	@echo "        Build and install the stack to ${PREFIX}"
 	@echo ""
 	@echo ""
 	@echo "== DIRECTORIES =="
 	@echo ""
 	@echo "    Workspace path: ${WSPACE}"
-	@echo "    Build directory: ${BUILDDIR}"
-	@echo "    Install prefix: ${INSTALL_PREFIX}"
+	@echo "    Install prefix: ${PREFIX}"
 
 
 # Retrieve all sources from this repo's parent
-REPOS ?= $(error "Missing REPOS: root of sx-aurora-dev llvm repositories.")#  $(dir $(shell cd ${WSPACE} && git config remote.origin.url))
-BRANCH ?= $(error "Missing BRANCH: branches to build installation from") # hpce/develop)
-BUILD_TYPE ?= $(error "Missing BUILD_TYPE: Release|RelWithDebInf|Debug") # Debug
+REPOS ?= $(error "Missing REPOS: root of sx-aurora-dev llvm repositories.")
+BRANCH ?= $(error "Missing BRANCH: branches to build installation from")
+LLVM_BUILD_TYPE ?= $(error "Missing LLVM_BUILD_TYPE: Release|RelWithDebInfo|Debug")
 BUILD_TARGET = "VE;X86"
-TARGET = ve-linux
 OMPARCH = ve
 
 # tools
@@ -70,128 +63,19 @@ CMAKE?=cmake
 
 # RESDIR requires trailing '/'.
 OPTFLAGS = -O3
-# llvm test tools are not installed, so need to specify them independently
-TOOLDIR = ${LLVM_BUILDDIR}/bin
 
 RM = rm
 RMDIR = rmdir
 THREADS = -j8
 CLANG = ${DEST}/bin/clang
 
-LLVMPROJECT=${WSPACE}/llvm-project
-CACHES=${LLVMPROJECT}/clang/cmake/caches
+MONOREPO=${WSPACE}/llvm-project
 
-# Tag the build
-CLANG_VENDOR?=llvm-ve-rv-dev
+# TODO: Restore vendor tag
+# CLANG_VENDOR?=llvm-ve-rv-dev
 
-BUILDDIR_STAGE_1=${BUILDDIR}/build_stage_1
-BUILDDIR_STAGE_2=${BUILDDIR}/build_stage_2
-BUILDDIR_STAGE_3=${BUILDDIR}/build_stage_3
+clone:
+	git clone ${CLONEOPTS} ${REPOS}/llvm-project.git -b ${BRANCH} --recurse-submodules ${MONOREPO}
 
-TMP_INSTALL_STAGE3=${BUILDDIR}/tmp_install_stage3
-
-CLANG_VERSION=13.0.0
-VE_RUNTIME_LIB_PATH=${INSTALL_PREFIX}/lib/clang/${CLANG_VERSION}/lib/linux/ve
-
-install: install-stage3
-
-
-
-# Stage 3 steps (OpenMP for VE)
-check-stage3: build-stage3
-	cd ${BUILDDIR_STAGE_3} && ${NINJA} check-all
-
-
-install-stage3: build-stage3
-	mkdir -p ${VE_RUNTIME_LIB_PATH}
-	cp ${BUILDDIR_STAGE_3}/runtime/src/*.so ${VE_RUNTIME_LIB_PATH}
-	cp ${BUILDDIR_STAGE_3}/libomptarget/*.so ${VE_RUNTIME_LIB_PATH}
-
-build-stage3: configure-stage3
-	cd ${BUILDDIR_STAGE_3} && ${NINJA}
-
-configure-stage3: install-stage2
-	mkdir -p ${BUILDDIR_STAGE_3}
-	cd ${BUILDDIR_STAGE_3} && ${CMAKE} -G Ninja ${LLVMPROJECT}/openmp \
-		                           -DCMAKE_INSTALL_PREFIX=${TMP_INSTALL_STAGE3} \
-					   -DLIBOMP_ARCH=ve \
-					   -DOPENMP_FILECHECK_EXECUTABLE=${INSTALL_PREFIX}/bin/FileCheck \
-					   -DOPENMP_NOT_EXECUTABLE=${INSTALL_PREFIX}/bin/FileCheck \
-					   -DLIBOMP_USE_ADAPTIVE_LOCKS=Off \
-					   -DLIBOMP_OMPT_SUPPORT=Off \
-					   -DCMAKE_CXX_COMPILER=${INSTALL_PREFIX}/bin/clang++ \
-					   -DCMAKE_C_COMPILER=${INSTALL_PREFIX}/bin/clang \
-					   -DCMAKE_CXX_FLAGS="--target=ve-linux" \
-					   -DCMAKE_C_FLAGS="--target=ve-linux" \
-                                           -DLIBOMP_HAVE_SHM_OPEN_WITH_LRT=1
-# Force linking of librt on VE.
-
-# Stage 2 steps (Self-hosting Clang, OpenMP for X86)
-check-stage2: build-stage2
-	cd ${BUILDDIR_STAGE_2} && ${NINJA} check-all
-
-install-stage2: build-stage2
-	cd ${BUILDDIR_STAGE_2} && ${NINJA} install
-
-build-stage2: configure-stage2
-	cd ${BUILDDIR_STAGE_2} && ${NINJA}
-
-configure-stage2: install-stage1
-	mkdir -p ${BUILDDIR_STAGE_2}
-	cd ${BUILDDIR_STAGE_2} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm \
-	       	-DLLVM_ENABLE_RTTI=on \
-	       	-DBOOTSTRAP_PREFIX=${INSTALL_PREFIX} \
-		-C ${CACHES}/VectorEngine-Stage-2.cmake \
-	       	-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
-		-DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-		-DCLANG_VENDOR=${CLANG_VENDOR} \
-		-DLIBOMPTARGET_ENABLE_DEBUG=On
-
-
-# Stage 1 steps (Clang++ for VH and VE)
-check-stage1: build-stage1
-	cd ${BUILDDIR_STAGE_1} && ${NINJA} check-all
-
-install-stage1: build-stage1
-	cd ${BUILDDIR_STAGE_1} && ${NINJA} install
-
-build-stage1: configure-stage1
-	cd ${BUILDDIR_STAGE_1} && ${NINJA}
-
-configure-stage1:
-	mkdir -p ${BUILDDIR_STAGE_1}
-	cd ${BUILDDIR_STAGE_1} && ${CMAKE} -G Ninja ${LLVMPROJECT}/llvm \
-	       	-C ${CACHES}/VectorEngine-Stage-1.cmake \
-	       	-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} \
-		-DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-		-DCLANG_VENDOR=${CLANG_VENDOR}
-
-clone-shallow:
-	REPOS=${REPOS} BRANCH=${BRANCH} WSPACE=${WSPACE} \
-	    ${SCRIPTS}/clone-source.sh --depth 1
-
-clone: clone-deep
-
-clone-deep:
-	REPOS=${REPOS} BRANCH=${BRANCH} WSPACE=${WSPACE} \
-	    ${SCRIPTS}/clone-source.sh
-
-update: update-deep
-
-update-shallow:
-	BRANCH=${BRANCH} WSPACE=${WSPACE} \
-	    ${SCRIPTS}/update-source.sh --depth 1
-
-update-deep:
-	BRANCH=${BRANCH} WSPACE=${WSPACE} \
-	    ${SCRIPTS}/update-source.sh
-
-clean:
-	${RM} -rf ${BUILDDIR_STAGE_1} ${BUILDDIR_STAGE_2}
-
-FORCE:
-
-.PHONY: FORCE clone-shallow clone-deep update-shallow update-deep \
-	build-stage1 configure-stage1 install-stage1 \
-	build-stage2 configure-stage2 install-stage2 \
-	all help
+install:
+	make -f ${LLVMDEV}/ve-linux-steps.make BUILDROOT=${WSPACE}/build PREFIX=${PREFIX} MONOREPO=${MONOREPO} LLVM_BUILD_TYPE=${LLVM_BUILD_TYPE} install
