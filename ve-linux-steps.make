@@ -293,3 +293,5 @@ prepare:
 purge:
 	rm -rf ${PREFIX}/install
 	rm -rf ${BUILDROOT}/build\*
+
+.PHONY: get-steps install

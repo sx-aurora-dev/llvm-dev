@@ -79,3 +79,5 @@ clone:
 
 install:
 	make -f ${LLVMDEV}/ve-linux-steps.make BUILDROOT=${WSPACE}/build PREFIX=${PREFIX} MONOREPO=${MONOREPO} LLVM_BUILD_TYPE=${LLVM_BUILD_TYPE} install
+
+.PHONY: install
