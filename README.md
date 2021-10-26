@@ -31,7 +31,7 @@ Clone this repository:
 Clone all repositories of LLVM for SX-Aurora. The Makefile expects the required
 git repositories to be available at `<REPOS>` and it will checkout the branch
 `<BRANCH>` of all of them. For example, if your vector host connects to github,
-use `https://github.com/sx-aurora-dev` as `<REPOS>` and `hpce/develop` as the
+use `https://github.com/sx-aurora-dev` as `<REPOS>` and `hpce/stable` as the
 `<BRANCH>`. `<BUILD_TYPE>` is passed on to configure the LLVM builds.
 
     $ REPOS=<REPO> BRANCH=<BRANCH> LLVM_BUILD_TYPE=<BUILD_TYPE> make -f llvm-dev/Makefile clone
