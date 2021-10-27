@@ -40,10 +40,13 @@ install:
 	${SELFMAKE} build-omp-ve
 	${SELFMAKE} install-omp-ve
 
-##### Config #####
-# Maximum number of ninja jobs (builds only)
+##### Tools & Config #####
+CMAKE?=cmake
+NINJA?=ninja
+
+# Maximum number of ${NINJA} jobs (builds only)
 # JOB_LIMIT_FLAG=-j3
-JOB_LIMIT_FLAG=
+JOB_LIMIT_FLAG?=
 
 ##### Derived Configuration #####
 
@@ -100,7 +103,7 @@ OMP_OPTFLAGS?=-O2
 ### Vanilla LLVM stage ###
 build-llvm:
 	mkdir -p ${LLVM_BUILD}
-	cd ${LLVM_BUILD} && cmake ${MONOREPO}/llvm -G Ninja \
+	cd ${LLVM_BUILD} && ${CMAKE} ${MONOREPO}/llvm -G Ninja \
 	      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 	      -DLLVM_PARALLEL_LINK_JOBS=1 \
 	      -DLLVM_BUILD_LLVM_DYLIB=On \
@@ -112,25 +115,25 @@ build-llvm:
 	      -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 	      -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;openmp" \
 	      -DLLVM_INSTALL_UTILS=On
-	cd ${LLVM_BUILD} && ninja ${JOB_LIMIT_FLAG}
+	cd ${LLVM_BUILD} && ${NINJA} ${JOB_LIMIT_FLAG}
 
 install-llvm:
 	# build-llvm
-	cd ${LLVM_BUILD} && ninja install
+	cd ${LLVM_BUILD} && ${NINJA} install
 	# Manually move libc++ headers to $RESDIR
 	mkdir -p ${CLANG_RESDIR}/include
 	cp -r "${PREFIX}/include/c++" "${CLANG_RESDIR}/include/"
 
 check-llvm:
 	# build-llvm
-	cd ${LLVM_BUILD} && ninja check-all
+	cd ${LLVM_BUILD} && ${NINJA} check-all
 
 
 ### Compiler-RT standalone ###
 
 build-crt-ve:
 	mkdir -p ${CRT_BUILD_VE}
-	cd ${CRT_BUILD_VE} && cmake ${MONOREPO}/compiler-rt -G Ninja \
+	cd ${CRT_BUILD_VE} && ${CMAKE} ${MONOREPO}/compiler-rt -G Ninja \
 	    -DCOMPILER_RT_BUILD_BUILTINS=ON \
 	    -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
 	    -DCOMPILER_RT_BUILD_XRAY=OFF \
@@ -155,19 +158,19 @@ build-crt-ve:
 	    -DCOMPILER_RT_INCLUDE_TESTS=ON \
 	    -DCOMPILER_RT_TEST_COMPILER=${BUILT_CLANG} \
 	    -DCOMPILER_RT_TEST_COMPILER_CFLAGS="-target ${VE_TARGET} ${CRT_TEST_OPTFLAGS}"
-	cd ${CRT_BUILD_VE} && ninja ${JOB_LIMIT_FLAG}
+	cd ${CRT_BUILD_VE} && ${NINJA} ${JOB_LIMIT_FLAG}
 
 check-crt-ve: build-crt-ve
-	cd ${CRT_BUILD_VE} && env PATH=${PREFIX}/bin:${PATH} ninja check-compiler-rt
+	cd ${CRT_BUILD_VE} && env PATH=${PREFIX}/bin:${PATH} ${NINJA} check-compiler-rt
 
 install-crt-ve: build-crt-ve
-	cd ${CRT_BUILD_VE} && ninja install
+	cd ${CRT_BUILD_VE} && ${NINJA} install
 
 
 ### libunwind standalone ###
 build-libunwind-ve:
 	mkdir -p ${LIBUNWIND_BUILD_VE}
-	cd ${LIBUNWIND_BUILD_VE} && cmake ${MONOREPO}/libunwind -G Ninja \
+	cd ${LIBUNWIND_BUILD_VE} && ${CMAKE} ${MONOREPO}/libunwind -G Ninja \
 	    -DLIBUNWIND_TARGET_TRIPLE="${VE_TARGET}" \
 	    -DCMAKE_C_COMPILER=${BUILT_CLANG} \
 	    -DCMAKE_CXX_COMPILER=${BUILT_CLANGXX} \
@@ -184,17 +187,17 @@ build-libunwind-ve:
 	    -DCMAKE_C_FLAGS_RELEASE="${LIBUNWIND_OPTFLAGS}" \
 	    -DLIBUNWIND_LIBCXX_PATH=${MONOREPO}/libcxx \
 	    -DLLVM_PATH=${MONOREPO}/llvm
-	cd ${LIBUNWIND_BUILD_VE} && ninja ${JOB_LIMIT_FLAG}
+	cd ${LIBUNWIND_BUILD_VE} && ${NINJA} ${JOB_LIMIT_FLAG}
 
 install-libunwind-ve:
-	cd ${LIBUNWIND_BUILD_VE} && ninja install
+	cd ${LIBUNWIND_BUILD_VE} && ${NINJA} install
 
 
 ### libcxx standalone ###
 
 build-libcxx-ve:
 	mkdir -p ${LIBCXX_BUILD_VE}
-	cd ${LIBCXX_BUILD_VE} && cmake ${MONOREPO}/libcxx -G Ninja \
+	cd ${LIBCXX_BUILD_VE} && ${CMAKE} ${MONOREPO}/libcxx -G Ninja \
 	        -DLIBCXX_USE_COMPILER_RT=True \
   	        -DLIBCXX_TARGET_TRIPLE="${VE_TARGET}" \
   	        -DCMAKE_C_COMPILER=${BUILT_CLANG} \
@@ -213,13 +216,13 @@ build-libcxx-ve:
   	        -DCMAKE_CXX_FLAGS="-nostdlib++" \
   	        -DCMAKE_CXX_FLAGS_RELEASE="${LIBCXX_OPTFLAGS}" \
   	        -DLIBCXX_USE_COMPILER_RT=True
-	cd ${LIBCXX_BUILD_VE} && ninja ${JOB_LIMIT_FLAG}
+	cd ${LIBCXX_BUILD_VE} && ${NINJA} ${JOB_LIMIT_FLAG}
 
 check-libcxx-ve:
-	cd ${LIBCXX_BUILD_VE} && ninja check-cxx
+	cd ${LIBCXX_BUILD_VE} && ${NINJA} check-cxx
 
 install-libcxx-ve:
-	cd ${LIBCXX_BUILD_VE} && ninja install
+	cd ${LIBCXX_BUILD_VE} && ${NINJA} install
         
 
 
@@ -228,7 +231,7 @@ install-libcxx-ve:
 
 build-libcxxabi-ve:
 	mkdir -p ${LIBCXXABI_BUILD_VE}
-	cd ${LIBCXXABI_BUILD_VE} && cmake ${MONOREPO}/libcxxabi -G Ninja \
+	cd ${LIBCXXABI_BUILD_VE} && ${CMAKE} ${MONOREPO}/libcxxabi -G Ninja \
 	      -DCMAKE_C_COMPILER=${BUILT_CLANG} \
 	      -DCMAKE_CXX_COMPILER=${BUILT_CLANGXX} \
 	      -DCMAKE_AR=${PREFIX}/bin/llvm-ar \
@@ -248,17 +251,17 @@ build-libcxxabi-ve:
 	      -DLIBCXXABI_USE_COMPILER_RT=True \
 	      -DLIBCXXABI_HAS_NOSTDINCXX_FLAG=True \
 	      -DLIBCXXABI_LIBCXX_INCLUDES="${CLANG_RESDIR}/include/c++/v1/"
-	cd ${LIBCXXABI_BUILD_VE} && ninja ${JOB_LIMIT_FLAG}
+	cd ${LIBCXXABI_BUILD_VE} && ${NINJA} ${JOB_LIMIT_FLAG}
         
 check-libcxxabi-ve:
-	cd ${LIBCXXABI_BUILD_VE} && ninja check-cxxabi
+	cd ${LIBCXXABI_BUILD_VE} && ${NINJA} check-cxxabi
 
 install-libcxxabi-ve:
-	cd ${LIBCXXABI_BUILD_VE} && ninja install
+	cd ${LIBCXXABI_BUILD_VE} && ${NINJA} install
         
 build-omp-ve:
 	mkdir -p ${OMP_BUILD_VE}
-	cd ${OMP_BUILD_VE} && cmake ${MONOREPO}/openmp -G Ninja \
+	cd ${OMP_BUILD_VE} && ${CMAKE} ${MONOREPO}/openmp -G Ninja \
 	      -DCMAKE_C_COMPILER=${BUILT_CLANG} \
 	      -DCMAKE_C_COMPILER=${PREFIX}/bin/clang \
 	      -DCMAKE_CXX_COMPILER=${PREFIX}/bin/clang++ \
@@ -275,13 +278,13 @@ build-omp-ve:
 	      -DCMAKE_C_FLAGS_RELEASE="${OMP_OPTFLAGS}" \
 	      -DLIBOMP_ARCH=ve \
 	      -DOPENMP_LLVM_TOOLS_DIR=$TOOLDIR \
-	      -DLLVM_DIR="${PREFIX}/lib/cmake/llvm" \
+	      -DLLVM_DIR="${PREFIX}/lib/${CMAKE}/llvm" \
 	      -DZLIB_LIBRARY="/lib/x86_64-linux-gnu/" \
 	      -DCMAKE_SKIP_RPATH=true
-	cd ${OMP_BUILD_VE} && ninja ${JOB_LIMIT_FLAG}
+	cd ${OMP_BUILD_VE} && ${NINJA} ${JOB_LIMIT_FLAG}
 
 install-omp-ve:
-	cd ${OMP_BUILD_VE} && ninja install
+	cd ${OMP_BUILD_VE} && ${NINJA} install
 
 
 # Clearout the temporary install prefix.
