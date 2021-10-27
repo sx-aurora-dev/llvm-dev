@@ -63,7 +63,7 @@ OMP_BUILD_VE="${BUILDROOT}/build_omp_ve"
 # Install prefix structure
 BUILT_CLANG="${PREFIX}/bin/clang"
 BUILT_CLANGXX="${PREFIX}/bin/clang++"
-VE_TARGET="ve-linux"
+VE_TARGET=ve-linux
 LINUX_VE_LIBSUFFIX=/linux/ve
 
 # Resource dir (Requires clang to be installed before this variable gets expanded)
@@ -77,7 +77,6 @@ RUNTIMES_BUILD_TYPE?=Release
 ### Compiler-RT
 CRT_BUILD_TYPE?=${RUNTIMES_BUILD_TYPE}
 CRT_OPTFLAGS=-O2
-CRT_TEST_OPTFLAGS?=-O2
 
 ## libunwind
 LIBUNWIND_BUILD_TYPE?=${RUNTIMES_BUILD_TYPE}
@@ -157,7 +156,7 @@ build-crt-ve:
 	    -DCMAKE_C_FLAGS_RELEASE=${CRT_OPTFLAGS} \
 	    -DCOMPILER_RT_INCLUDE_TESTS=ON \
 	    -DCOMPILER_RT_TEST_COMPILER=${BUILT_CLANG} \
-	    -DCOMPILER_RT_TEST_COMPILER_CFLAGS=-target ${VE_TARGET} ${CRT_TEST_OPTFLAGS}
+	    -DCOMPILER_RT_TEST_COMPILER_CFLAGS="--target=${VE_TARGET}"
 	cd ${CRT_BUILD_VE} && ${NINJA} ${JOB_LIMIT_FLAG}
 
 check-crt-ve: build-crt-ve
