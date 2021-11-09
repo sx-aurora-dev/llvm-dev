@@ -71,6 +71,8 @@ RES_VERSION=$(shell ${LLVM_BUILD}/bin/llvm-config  --version | sed -n 's/git//p'
 CLANG_RESDIR="${PREFIX}/lib/clang/${RES_VERSION}"
 
 ### LLVM
+# DWARF symbol issues with dylib, atm (defaulting to static build).
+LLVM_BUILD_DYLIB?=Off
 LLVM_BUILD_TYPE?=RelWithDebInfo
 RUNTIMES_BUILD_TYPE?=Release
 
@@ -105,9 +107,9 @@ build-llvm:
 	cd ${LLVM_BUILD} && ${CMAKE} ${MONOREPO}/llvm -G Ninja \
 	      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 	      -DLLVM_PARALLEL_LINK_JOBS=1 \
-	      -DLLVM_BUILD_LLVM_DYLIB=On \
-	      -DLLVM_LINK_LLVM_DYLIB=On \
-	      -DCLANG_LINK_CLANG_DYLIB=On \
+	      -DLLVM_BUILD_LLVM_DYLIB=${LLVM_BUILD_DYLIB} \
+	      -DLLVM_LINK_LLVM_DYLIB=${LLVM_BUILD_DYLIB} \
+	      -DCLANG_LINK_CLANG_DYLIB=${LLVM_BUILD_DYLIB} \
 	      -DLLVM_TARGETS_TO_BUILD="X86" \
 	      -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="VE" \
 	      -DLLVM_ENABLE_PROJECTS="clang" \
