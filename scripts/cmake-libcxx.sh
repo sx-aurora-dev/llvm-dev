@@ -26,6 +26,7 @@ $CMAKE -G Ninja \
   -DCMAKE_CXX_FLAGS="-nostdlib++" \
   -DCMAKE_CXX_FLAGS_RELEASE="$OPTFLAGS" \
   -DLIBCXX_USE_COMPILER_RT=True \
+  -DLIBCXX_INCLUDE_BENCHMARKS=OFF \
   $SRCDIR/libcxx
 
 # Force to remove isntall path from compiled libraries.
