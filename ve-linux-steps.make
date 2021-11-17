@@ -213,6 +213,7 @@ build-libcxx-ve:
   	        -DLIBCXXABI_USE_LLVM_UNWINDER=True \
   	        -DLIBCXX_CXX_ABI=libcxxabi \
   	        -DLIBCXX_CXX_ABI_INCLUDE_PATHS=${MONOREPO}/libcxxabi/include \
+  	        -DLIBCXX_INCLUDE_BENCHMARKS=Off \
   	        -DCMAKE_C_FLAGS_RELEASE="${LIBCXX_OPTFLAGS}" \
   	        -DCMAKE_CXX_FLAGS="-nostdlib++" \
   	        -DCMAKE_CXX_FLAGS_RELEASE="${LIBCXX_OPTFLAGS}" \
