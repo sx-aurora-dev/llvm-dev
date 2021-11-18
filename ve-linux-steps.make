@@ -73,6 +73,8 @@ CLANG_RESDIR="${PREFIX}/lib/clang/${RES_VERSION}"
 ### LLVM
 # DWARF symbol issues with dylib, atm (defaulting to static build).
 LLVM_BUILD_DYLIB?=Off
+# Whether to build separate shared libraries per component.
+LLVM_BUILD_SOLIBS?=On
 LLVM_BUILD_TYPE?=RelWithDebInfo
 RUNTIMES_BUILD_TYPE?=Release
 
@@ -107,6 +109,7 @@ build-llvm:
 	cd ${LLVM_BUILD} && ${CMAKE} ${MONOREPO}/llvm -G Ninja \
 	      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 	      -DLLVM_PARALLEL_LINK_JOBS=1 \
+              -DBUILD_SHARED_LIBS=${LLVM_BUILD_SOLIBS} \
 	      -DLLVM_BUILD_LLVM_DYLIB=${LLVM_BUILD_DYLIB} \
 	      -DLLVM_LINK_LLVM_DYLIB=${LLVM_BUILD_DYLIB} \
 	      -DCLANG_LINK_CLANG_DYLIB=${LLVM_BUILD_DYLIB} \
