@@ -17,6 +17,8 @@ DBG_DEST = ${LLVM_DEV_DIR}/install-debug
 SRCDIR = ${LLVM_DEV_DIR}/llvm-project
 BUILDDIR = ${LLVM_DEV_DIR}
 LLVM_BUILDDIR = ${BUILDDIR}/build
+LLVM_DISTBUILDDIR = ${BUILDDIR}/dist-build
+LLVM_DISTDIR = ${BUILDDIR}/dist
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
 CMPRT_BUILDDIR = ${BUILDDIR}/compiler-rt
 UNWIND_BUILDDIR = ${BUILDDIR}/libunwind
@@ -74,6 +76,14 @@ ve:
 	    ${LLVM_DEV_DIR}/scripts/cmake-ve.sh
 	cd ${LLVM_BUILDDIR} && ${NINJA} distribution
 	cd ${LLVM_BUILDDIR} && ${NINJA} install-distribution
+
+dist:
+	mkdir -p ${LLVM_DISTBUILDDIR}
+	cd ${LLVM_DISTBUILDDIR} && CMAKE=${CMAKE} DEST=${LLVM_DISTDIR} \
+	    COMPILE_THREADS=${COMPILE_THREADS} LINK_THREADS=${LINK_THREADS} \
+	    SRCDIR=${SRCDIR} ${LLVM_DEV_DIR}/scripts/cmake-dist.sh
+	cd ${LLVM_DISTBUILDDIR} && ${NINJA} stage2-distribution
+	cd ${LLVM_DISTBUILDDIR} && ${NINJA} stage2-install-distribution
 
 install: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
