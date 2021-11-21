@@ -19,6 +19,7 @@ $CMAKE -G Ninja \
   -DLLVM_DIR="$DEST/lib/cmake/llvm" \
   -DZLIB_LIBRARY="/lib/x86_64-linux-gnu/" \
   -DCMAKE_SKIP_RPATH=true \
+  -DOPENMP_ENABLE_LIBOMPTARGET_PROFILING=OFF \
   $SRCDIR/openmp
 
 # Modify lit.site.cfg to test on VE
@@ -27,19 +28,4 @@ sed -e 's:test_openmp_flags = ":test_openmp_flags = "-target ve-linux -frtlib-ad
 
 # Add -j1 to llvm-lit
 sed -e 's:llvm-lit:llvm-lit -j1:' \
-    -i build.ninja
-
-# Fix include problem caused by f2f88f3
-# It tries to read header files for host.
-sed -e 's:-isystem /usr/include::' \
-    -i build.ninja
-
-# Fix library target problem caused by f2f88f3
-# It tries to link library files for host.
-sed -e 's:\(build libomptarget/libomptarget.so.*\) |.*$:\1:' \
-    -i build.ninja
-
-# Fix link library problem caused by f2f88f3
-# It tries to link library files for host.
-sed -e 's:LINK_LIBRARIES = .*/libLLVMSupport.a.*\(-ldl *-Wl,--version-script=.*/exports\).*:LINK_LIBRARIES = \1:' \
     -i build.ninja
