@@ -37,7 +37,9 @@ RM = rm
 RMDIR = rmdir
 CMAKE = cmake3
 NINJA = ninja-build
-THREADS = -j8
+COMPILE_THREADS = 6
+LINK_THREADS = 3
+TEST_THREADS = 1
 CLANG = ${DEST}/bin/clang
 
 all: check-source cmake install libraries
@@ -56,15 +58,16 @@ cmake:
 	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} \
 	    EXP_TARGET=${EXP_TARGET} SRCDIR=${SRCDIR} \
+	    COMPILE_THREADS=${COMPILE_THREADS} LINK_THREADS=${LINK_THREADS} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
 
 build:
 	@test -d ${LLVM_BUILDDIR} || echo Need to cmake first by \"make cmake\"
 	@test -d ${LLVM_BUILDDIR} || exit 1
-	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS}
+	cd ${LLVM_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS}
 
 install: build
-	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} install
+	cd ${LLVM_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 installall: install compiler-rt libunwind libcxx-headers libcxxabi libcxx openmp
 
@@ -79,10 +82,10 @@ install-debug:
 	    BUILD_TYPE=Debug ${MFLAGS} install
 
 check-llvm: build
-	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} check-llvm
+	cd ${LLVM_BUILDDIR} && ${NINJA} -j${TEST_THREADS} check-llvm
 
 check-clang: build
-	cd ${LLVM_BUILDDIR} && ${NINJA} ${THREADS} check-clang
+	cd ${LLVM_BUILDDIR} && ${NINJA} -j${TEST_THREADS} check-clang
 
 compiler-rt:
 	mkdir -p ${CMPRT_BUILDDIR}
@@ -92,13 +95,13 @@ compiler-rt:
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-compiler-rt.sh
-	cd ${CMPRT_BUILDDIR} && ${NINJA} ${THREADS} install
+	cd ${CMPRT_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 # This target is not working at the moment since we don't
 # enable sanitizer for VE yet.
 check-compiler-rt: compiler-rt
-	cd compiler-rt && ${NINJA} ${THREADS} check-builtins
-#	cd compiler-rt && ${NINJA} ${THREADS} check-compiler-rt (will check CRT)
+	cd compiler-rt && ${NINJA} -j${TEST_THREADS} check-builtins
+#	cd compiler-rt && ${NINJA} -j${TEST_THREADS} check-compiler-rt (will check CRT)
 
 libunwind:
 	mkdir -p ${UNWIND_BUILDDIR}
@@ -107,10 +110,10 @@ libunwind:
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libunwind.sh
-	cd ${UNWIND_BUILDDIR} && ${NINJA} ${THREADS} install
+	cd ${UNWIND_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 check-libunwind: libunwind
-	cd libunwind && ${NINJA} ${THREADS} check-unwind
+	cd libunwind && ${NINJA} -j${TEST_THREADS} check-unwind
 
 libcxxabi:
 	mkdir -p ${CXXABI_BUILDDIR}
@@ -119,10 +122,10 @@ libcxxabi:
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxxabi.sh
-	cd ${CXXABI_BUILDDIR} && ${NINJA} ${THREADS} install
+	cd ${CXXABI_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 check-libcxxabi: libcxxabi
-	cd libcxxabi && ${NINJA} ${THREADS} check-cxxabi
+	cd libcxxabi && ${NINJA} -j${TEST_THREADS} check-cxxabi
 
 libcxx-headers:
 	mkdir -p ${CXX_BUILDDIR}
@@ -131,7 +134,7 @@ libcxx-headers:
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
-	cd ${CXX_BUILDDIR} && ${NINJA} ${THREADS} install-cxx-headers
+	cd ${CXX_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install-cxx-headers
 
 libcxx:
 	mkdir -p ${CXX_BUILDDIR}
@@ -140,10 +143,10 @@ libcxx:
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
-	cd ${CXX_BUILDDIR} && ${NINJA} ${THREADS} install
+	cd ${CXX_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 check-libcxx: libcxx
-	cd libcxx && ${NINJA} ${THREADS} check-cxx
+	cd libcxx && ${NINJA} -j${TEST_THREADS} check-cxx
 
 openmp:
 	mkdir -p ${OPENMP_BUILDDIR}
@@ -152,10 +155,10 @@ openmp:
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} OMPARCH=${OMPARCH} \
 	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-openmp.sh
-	cd ${OPENMP_BUILDDIR} && ${NINJA} ${THREADS} install
+	cd ${OPENMP_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 check-openmp: openmp
-	cd openmp && ${NINJA} ${THREADS} check-openmp
+	cd openmp && ${NINJA} -j${TEST_THREADS} check-openmp
 
 shallow:
 	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
