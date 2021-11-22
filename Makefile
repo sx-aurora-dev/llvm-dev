@@ -47,9 +47,6 @@ CLANG = ${DEST}/bin/clang
 all: check-source cmake install libraries
 libraries: compiler-rt libunwind libcxx-headers libcxxabi libcxx openmp
 
-musl:
-	make TARGET=ve-linux-musl all
-
 check-source:
 	@test -d ${SRCDIR} || echo Need to prepare source code by \
 	    \"make shallow\"
@@ -209,4 +206,4 @@ FORCE:
 
 .PHONY: FORCE shallow deep clean dist clean check-source cmake build install \
 	libraries compiler-rt libunwind libcxxabi libcxx openmp \
-	build-debug install-debug musl installall
+	build-debug install-debug installall
