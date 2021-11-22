@@ -8,6 +8,7 @@ BRANCH = develop
 BUILD_TYPE = Release
 BUILD_TARGET = "X86"
 EXP_TARGET = "VE"
+X86_TRIPLE = x86_64-unknown-linux-gnu
 VE_TRIPLE = ve-unknown-linux-gnu
 OMPARCH = ve
 
@@ -55,10 +56,10 @@ check-source:
 cmake:
 	mkdir -p ${LLVM_BUILDDIR}
 	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
-	    BUILD_TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} \
-	    EXP_TARGET=${EXP_TARGET} SRCDIR=${SRCDIR} \
+	    BUILD_TYPE=${BUILD_TYPE} TARGET=${X86_TRIPLE} \
+	    BUILD_TARGET=${BUILD_TARGET} EXP_TARGET=${EXP_TARGET} \
 	    COMPILE_THREADS=${COMPILE_THREADS} LINK_THREADS=${LINK_THREADS} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
+	    SRCDIR=${SRCDIR} ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
 
 build:
 	@test -d ${LLVM_BUILDDIR} || echo Need to cmake first by \"make cmake\"
