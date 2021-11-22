@@ -132,9 +132,8 @@ check-libunwind: libunwind
 
 libcxxabi:
 	mkdir -p ${CXXABI_BUILDDIR}
-	cd ${CXXABI_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
+	cd ${CXXABI_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} RESDIR=${RESDIR} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxxabi.sh
 	cd ${CXXABI_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
