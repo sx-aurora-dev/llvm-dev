@@ -8,7 +8,7 @@ BRANCH = develop
 BUILD_TYPE = Release
 BUILD_TARGET = "X86"
 EXP_TARGET = "VE"
-TARGET = ve-linux-gnu
+VE_TRIPLE = ve-unknown-linux-gnu
 OMPARCH = ve
 
 # DEST, SRCDIR, BUILDDIR and others requires to use an abosolute path
@@ -55,7 +55,7 @@ check-source:
 cmake:
 	mkdir -p ${LLVM_BUILDDIR}
 	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
-	    TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} \
+	    BUILD_TARGET=${BUILD_TARGET} BUILD_TYPE=${BUILD_TYPE} \
 	    EXP_TARGET=${EXP_TARGET} SRCDIR=${SRCDIR} \
 	    COMPILE_THREADS=${COMPILE_THREADS} LINK_THREADS=${LINK_THREADS} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-llvm.sh
@@ -105,11 +105,11 @@ check-clang: build
 
 compiler-rt:
 	mkdir -p ${CMPRT_BUILDDIR}
-	cd ${CMPRT_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${CMPRT_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    COMPILER_RT_TEST_OPTFLAGS="${COMPILER_RT_TEST_OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
+	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-compiler-rt.sh
 	cd ${CMPRT_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
@@ -121,10 +121,10 @@ check-compiler-rt: compiler-rt
 
 libunwind:
 	mkdir -p ${UNWIND_BUILDDIR}
-	cd ${UNWIND_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${UNWIND_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
+	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libunwind.sh
 	cd ${UNWIND_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
@@ -133,10 +133,10 @@ check-libunwind: libunwind
 
 libcxxabi:
 	mkdir -p ${CXXABI_BUILDDIR}
-	cd ${CXXABI_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${CXXABI_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
+	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxxabi.sh
 	cd ${CXXABI_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
@@ -145,19 +145,19 @@ check-libcxxabi: libcxxabi
 
 libcxx-headers:
 	mkdir -p ${CXX_BUILDDIR}
-	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
+	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
 	cd ${CXX_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install-cxx-headers
 
 libcxx:
 	mkdir -p ${CXX_BUILDDIR}
-	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
+	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
 	cd ${CXX_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
@@ -166,10 +166,10 @@ check-libcxx: libcxx
 
 openmp:
 	mkdir -p ${OPENMP_BUILDDIR}
-	cd ${OPENMP_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} TARGET=${TARGET} \
+	cd ${OPENMP_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} OMPARCH=${OMPARCH} \
-	    SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
+	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-openmp.sh
 	cd ${OPENMP_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
