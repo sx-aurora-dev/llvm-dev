@@ -66,6 +66,15 @@ build:
 	@test -d ${LLVM_BUILDDIR} || exit 1
 	cd ${LLVM_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS}
 
+ve:
+	mkdir -p ${LLVM_BUILDDIR}
+	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
+	    BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
+	    COMPILE_THREADS=${COMPILE_THREADS} LINK_THREADS=${LINK_THREADS} \
+	    ${LLVM_DEV_DIR}/scripts/cmake-ve.sh
+	cd ${LLVM_BUILDDIR} && ${NINJA} distribution
+	cd ${LLVM_BUILDDIR} && ${NINJA} install-distribution
+
 install: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
