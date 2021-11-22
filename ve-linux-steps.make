@@ -75,7 +75,7 @@ CLANG_RESDIR="${PREFIX}/lib/clang/${RES_VERSION}"
 LLVM_BUILD_DYLIB?=Off
 # Whether to build separate shared libraries per component.
 LLVM_BUILD_SOLIBS?=On
-LLVM_BUILD_TYPE?=RelWithDebInfo
+LLVM_BUILD_TYPE?=Release
 RUNTIMES_BUILD_TYPE?=Release
 
 ### Compiler-RT
@@ -107,7 +107,7 @@ OMP_OPTFLAGS?=-O2
 build-llvm:
 	mkdir -p ${LLVM_BUILD}
 	cd ${LLVM_BUILD} && ${CMAKE} ${MONOREPO}/llvm -G Ninja \
-	      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+	      -DCMAKE_BUILD_TYPE=${LLVM_BUILD_TYPE} \
 	      -DLLVM_PARALLEL_LINK_JOBS=1 \
               -DBUILD_SHARED_LIBS=${LLVM_BUILD_SOLIBS} \
 	      -DLLVM_BUILD_LLVM_DYLIB=${LLVM_BUILD_DYLIB} \
