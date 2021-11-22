@@ -143,18 +143,16 @@ check-libcxxabi: libcxxabi
 
 libcxx-headers:
 	mkdir -p ${CXX_BUILDDIR}
-	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
+	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} RESDIR=${RESDIR} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
 	cd ${CXX_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install-cxx-headers
 
 libcxx:
 	mkdir -p ${CXX_BUILDDIR}
-	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
+	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} RESDIR=${RESDIR} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
 	cd ${CXX_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
