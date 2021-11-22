@@ -121,9 +121,8 @@ check-compiler-rt: compiler-rt
 
 libunwind:
 	mkdir -p ${UNWIND_BUILDDIR}
-	cd ${UNWIND_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
+	cd ${UNWIND_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} RESDIR=${RESDIR} \
 	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    RESDIR=${RESDIR} LIBSUFFIX=${LIBSUFFIX} \
 	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-libunwind.sh
 	cd ${UNWIND_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
