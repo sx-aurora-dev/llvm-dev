@@ -42,7 +42,6 @@ CMAKE = cmake3
 NINJA = ninja-build
 COMPILE_THREADS = 6
 LINK_THREADS = 3
-TEST_THREADS = 1
 CLANG = ${DEST}/bin/clang
 
 all: check-source cmake install libraries
@@ -99,10 +98,10 @@ install-debug:
 	    BUILD_TYPE=Debug ${MFLAGS} install
 
 check-llvm: build
-	cd ${LLVM_BUILDDIR} && ${NINJA} -j${TEST_THREADS} check-llvm
+	cd ${LLVM_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} check-llvm
 
 check-clang: build
-	cd ${LLVM_BUILDDIR} && ${NINJA} -j${TEST_THREADS} check-clang
+	cd ${LLVM_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} check-clang
 
 compiler-rt:
 	mkdir -p ${CMPRT_BUILDDIR}
@@ -116,8 +115,8 @@ compiler-rt:
 # This target is not working at the moment since we don't
 # enable sanitizer for VE yet.
 check-compiler-rt: compiler-rt
-	cd compiler-rt && ${NINJA} -j${TEST_THREADS} check-builtins
-#	cd compiler-rt && ${NINJA} -j${TEST_THREADS} check-compiler-rt (will check CRT)
+	cd compiler-rt && ${NINJA} -j${COMPILE_THREADS} check-builtins
+#	cd compiler-rt && ${NINJA} -j${COMPILE_THREADS} check-compiler-rt (will check CRT)
 
 libunwind:
 	mkdir -p ${UNWIND_BUILDDIR}
@@ -128,7 +127,7 @@ libunwind:
 	cd ${UNWIND_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 check-libunwind: libunwind
-	cd libunwind && ${NINJA} -j${TEST_THREADS} check-unwind
+	cd libunwind && ${NINJA} -j${COMPILE_THREADS} check-unwind
 
 libcxxabi:
 	mkdir -p ${CXXABI_BUILDDIR}
@@ -139,7 +138,7 @@ libcxxabi:
 	cd ${CXXABI_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 check-libcxxabi: libcxxabi
-	cd libcxxabi && ${NINJA} -j${TEST_THREADS} check-cxxabi
+	cd libcxxabi && ${NINJA} -j${COMPILE_THREADS} check-cxxabi
 
 libcxx-headers:
 	mkdir -p ${CXX_BUILDDIR}
@@ -158,7 +157,7 @@ libcxx:
 	cd ${CXX_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 check-libcxx: libcxx
-	cd libcxx && ${NINJA} -j${TEST_THREADS} check-cxx
+	cd libcxx && ${NINJA} -j${COMPILE_THREADS} check-cxx
 
 openmp:
 	mkdir -p ${OPENMP_BUILDDIR}
@@ -169,7 +168,7 @@ openmp:
 	cd ${OPENMP_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 check-openmp: openmp
-	cd openmp && ${NINJA} -j${TEST_THREADS} check-openmp
+	cd openmp && ${NINJA} -j${COMPILE_THREADS} check-openmp
 
 shallow:
 	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
