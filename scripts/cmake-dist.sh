@@ -1,0 +1,8 @@
+#!/bin/sh
+
+$CMAKE -G Ninja \
+  -DLLVM_PARALLEL_COMPILE_JOBS=$COMPILE_THREADS \
+  -DLLVM_PARALLEL_LINK_JOBS=$LINK_THREADS \
+  -DCMAKE_INSTALL_PREFIX=$DEST \
+  -C $SRCDIR/clang/cmake/caches/NEC-VE-Dist.cmake \
+  $SRCDIR/llvm

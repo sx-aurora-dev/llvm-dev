@@ -86,6 +86,26 @@ by following command before use them.
 
     $ make install
 
+Compile Bootstrapping
+=====================
+
+Compile clang/llvm for X86/VE, compile/cross-compile libraries for X86 and VE
+using the compiled clang/llvm for X86/VE.  And install them to DEST directory
+by following command.
+
+    $ scl enable devtoolset-8 bash   # enable latest gcc on RHEL7
+    $ make DEST=~/.local ve          # need to use an absolute path
+
+Compile for distribution
+========================
+
+Compile clang/llvm for X86/VE, compile/cross-compile libraries for X86 and VE
+using the compiled clang/llvm for X86/VE.  And install stripped them to ./dist
+directory by following command.
+
+    $ scl enable devtoolset-8 bash   # enable latest gcc on RHEL7
+    $ make dist
+
 Debug mode compile
 ==================
 
