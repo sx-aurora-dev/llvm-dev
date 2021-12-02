@@ -18,6 +18,7 @@ DBG_DEST = ${LLVM_DEV_DIR}/install-debug
 SRCDIR = ${LLVM_DEV_DIR}/llvm-project
 BUILDDIR = ${LLVM_DEV_DIR}
 LLVM_BUILDDIR = ${BUILDDIR}/build
+LLVM_VEBUILDDIR = ${BUILDDIR}/ve-build
 LLVM_DISTBUILDDIR = ${BUILDDIR}/dist-build
 LLVM_DISTDIR = ${BUILDDIR}/dist
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
@@ -65,13 +66,21 @@ build:
 	cd ${LLVM_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS}
 
 ve:
-	mkdir -p ${LLVM_BUILDDIR}
-	cd ${LLVM_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
+	mkdir -p ${LLVM_VEBUILDDIR}
+	cd ${LLVM_VEBUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
 	    BUILD_TYPE=${BUILD_TYPE} SRCDIR=${SRCDIR} \
 	    COMPILE_THREADS=${COMPILE_THREADS} LINK_THREADS=${LINK_THREADS} \
 	    ${LLVM_DEV_DIR}/scripts/cmake-ve.sh
-	cd ${LLVM_BUILDDIR} && ${NINJA} distribution
-	cd ${LLVM_BUILDDIR} && ${NINJA} install-distribution
+	cd ${LLVM_VEBUILDDIR} && ${NINJA} distribution
+	cd ${LLVM_VEBUILDDIR} && ${NINJA} install-distribution
+
+ve-debug:
+	mkdir -p ve-debug
+	cd ve-debug && CMAKE=${CMAKE} DEST=${DEST} \
+	    BUILD_TYPE=Debug SRCDIR=${SRCDIR} \
+	    COMPILE_THREADS=${COMPILE_THREADS} LINK_THREADS=${LINK_THREADS} \
+	    ${LLVM_DEV_DIR}/scripts/cmake-ve.sh
+	cd ve-debug && ${NINJA} distribution
 
 dist:
 	mkdir -p ${LLVM_DISTBUILDDIR}
