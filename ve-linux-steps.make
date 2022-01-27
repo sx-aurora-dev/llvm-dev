@@ -72,9 +72,9 @@ CLANG_RESDIR="${PREFIX}/lib/clang/${RES_VERSION}"
 
 ### LLVM
 # DWARF symbol issues with dylib, atm (defaulting to static build).
-LLVM_BUILD_DYLIB?=Off
+LLVM_BUILD_DYLIB?=On
 # Whether to build separate shared libraries per component.
-LLVM_BUILD_SOLIBS?=On
+LLVM_BUILD_SOLIBS?=Off
 LLVM_BUILD_TYPE?=Release
 RUNTIMES_BUILD_TYPE?=Release
 
