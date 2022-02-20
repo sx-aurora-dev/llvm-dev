@@ -22,9 +22,7 @@ LLVM_DISTBUILDDIR = ${BUILDDIR}/dist-build
 LLVM_DISTDIR = ${BUILDDIR}/dist
 LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
 CMPRT_BUILDDIR = ${BUILDDIR}/compiler-rt
-UNWIND_BUILDDIR = ${BUILDDIR}/libunwind
-CXXABI_BUILDDIR = ${BUILDDIR}/libcxxabi
-CXX_BUILDDIR = ${BUILDDIR}/libcxx
+RUNTIMES_BUILDDIR = ${BUILDDIR}/runtimes
 OPENMP_BUILDDIR = ${BUILDDIR}/openmp
 # RESDIR requires trailing '/'.
 LLVM_VERSION_MAJOR = $(shell grep 'set.*LLVM_VERSION_MAJOR  *' ${SRCDIR}/llvm/CMakeLists.txt | sed -e 's/.*LLVM_VERSION_MAJOR //' -e 's/[^0-9][^0-9]*//')
@@ -45,7 +43,7 @@ LINK_THREADS = 3
 CLANG = ${DEST}/bin/clang
 
 all: check-source cmake install libraries
-libraries: compiler-rt libunwind libcxx-headers libcxxabi libcxx openmp
+libraries: compiler-rt runtimes openmp
 
 check-source:
 	@test -d ${SRCDIR} || echo Need to prepare source code by \
@@ -85,7 +83,7 @@ dist:
 install: build
 	cd ${LLVM_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
-installall: install compiler-rt libunwind libcxx-headers libcxxabi libcxx openmp
+installall: install compiler-rt runtimes openmp
 
 build-debug:
 	make LLVM_BUILDDIR=${LLVMDBG_BUILDDIR} DEST=${DBG_DEST} \
@@ -118,46 +116,22 @@ check-compiler-rt: compiler-rt
 	cd compiler-rt && ${NINJA} -j${COMPILE_THREADS} check-builtins
 #	cd compiler-rt && ${NINJA} -j${COMPILE_THREADS} check-compiler-rt (will check CRT)
 
-libunwind:
-	mkdir -p ${UNWIND_BUILDDIR}
-	cd ${UNWIND_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} RESDIR=${RESDIR} \
-	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
+runtimes:
+	mkdir -p ${RUNTIMES_BUILDDIR}
+	cd ${RUNTIMES_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
+            RESDIR=${RESDIR} BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
 	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-libunwind.sh
-	cd ${UNWIND_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
+	    ${LLVM_DEV_DIR}/scripts/cmake-runtimes.sh
+	cd ${RUNTIMES_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
-check-libunwind: libunwind
-	cd libunwind && ${NINJA} -j${COMPILE_THREADS} check-unwind
+check-libunwind: runtimes
+	cd ${RUNTIMES_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} check-unwind
 
-libcxxabi:
-	mkdir -p ${CXXABI_BUILDDIR}
-	cd ${CXXABI_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} RESDIR=${RESDIR} \
-	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-libcxxabi.sh
-	cd ${CXXABI_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
+check-libcxxabi: runtimes
+	cd ${RUNTIMES_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} check-cxxabi
 
-check-libcxxabi: libcxxabi
-	cd libcxxabi && ${NINJA} -j${COMPILE_THREADS} check-cxxabi
-
-libcxx-headers:
-	mkdir -p ${CXX_BUILDDIR}
-	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} RESDIR=${RESDIR} \
-	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
-	cd ${CXX_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install-cxx-headers
-
-libcxx:
-	mkdir -p ${CXX_BUILDDIR}
-	cd ${CXX_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} RESDIR=${RESDIR} \
-	    BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
-	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
-	    ${LLVM_DEV_DIR}/scripts/cmake-libcxx.sh
-	cd ${CXX_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
-
-check-libcxx: libcxx
-	cd libcxx && ${NINJA} -j${COMPILE_THREADS} check-cxx
+check-libcxx: runtimes
+	cd ${RUNTIMES_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} check-cxx
 
 openmp:
 	mkdir -p ${OPENMP_BUILDDIR}
@@ -187,9 +161,8 @@ deep-update:
 	    ${LLVM_DEV_DIR}/scripts/update-source.sh
 
 clean:
-	${RM} -rf ${LLVM_BUILDDIR} ${CMPRT_BUILDDIR} ${UNWIND_BUILDDIR} \
-	    ${CXXABI_BUILDDIR} ${CXX_BUILDDIR} ${OPENMP_BUILDDIR} \
-	    ${LLVMDBG_BUILDDIR}
+	${RM} -rf ${LLVM_BUILDDIR} ${CMPRT_BUILDDIR} ${RUNTIMES_BUILDDIR} \
+            ${OPENMP_BUILDDIR} ${LLVMDBG_BUILDDIR}
 	-${RMDIR} ${BUILDDIR}
 
 distclean: clean
@@ -199,5 +172,5 @@ distclean: clean
 FORCE:
 
 .PHONY: FORCE shallow deep clean dist clean check-source cmake build install \
-	libraries compiler-rt libunwind libcxxabi libcxx openmp \
+	libraries compiler-rt runtimes openmp \
 	build-debug install-debug installall
