@@ -164,11 +164,10 @@ deep-update:
 
 clean:
 	${RM} -rf ${LLVM_BUILDDIR} ${CMPRT_BUILDDIR} ${RUNTIMES_BUILDDIR} \
-            ${OPENMP_BUILDDIR} ${LLVMDBG_BUILDDIR}
+            ${OPENMP_BUILDDIR} ${LLVMDBG_BUILDDIR} ${DEST}
 	-${RMDIR} ${BUILDDIR}
 
 distclean: clean
-	${RM} -rf ${DEST}
 #	${RM} -rf ${SRCDIR}
 
 FORCE:
