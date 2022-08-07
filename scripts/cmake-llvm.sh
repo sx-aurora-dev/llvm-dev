@@ -11,4 +11,10 @@ $CMAKE -G Ninja \
   -DRUNTIMES_x86_64-unknown-linux-gnu_OPENMP_STANDALONE_BUILD=ON \
   -DRUNTIMES_x86_64-unknown-linux-gnu_OPENMP_LIBDIR_SUFFIX="/$TARGET" \
   -DCMAKE_INSTALL_PREFIX=$DEST \
+  -DLLVM_ENABLE_TERMINFO=OFF \
+  -DLLVM_ENABLE_ZLIB=OFF \
   $SRCDIR/llvm
+
+# Disable TERMINFO and ZLIB since those are enabled by default and cause
+# compile error in libomptarget.  I believe the source of problem is
+# libomptarget since accelarator never requires terminfo.
