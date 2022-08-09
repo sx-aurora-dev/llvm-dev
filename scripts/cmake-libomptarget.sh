@@ -14,10 +14,13 @@ $CMAKE -G Ninja \
   -DLLVM_DIR="$DEST/lib/cmake/llvm" \
   -DOPENMP_LIBDIR_SUFFIX="/$TARGET" \
   -DOPENMP_LLVM_TOOLS_DIR=$TOOLDIR \
-  -DOPENMP_ENABLE_LIBOMPTARGET=OFF \
   -DOPENMP_ENABLE_LIBOMPTARGET_PROFILING=OFF \
   -DLIBOMP_HAVE_SHM_OPEN_WITH_LRT=ON \
   $SRCDIR/openmp
+
+# Disable TERMINFO and ZLIB since those are enabled by default and cause
+# compile error in libomptarget.  I believe the source of problem is
+# libomptarget since accelarator never requires terminfo.
 
 # Modify lit.site.cfg to test on VE
 #sed -e 's:test_openmp_flags = ":test_openmp_flags = "-target ve-linux -frtlib-add-rpath -ldl -lrt :' \

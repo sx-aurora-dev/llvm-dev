@@ -24,6 +24,7 @@ LLVMDBG_BUILDDIR = ${BUILDDIR}/build-debug
 CMPRT_BUILDDIR = ${BUILDDIR}/compiler-rt
 RUNTIMES_BUILDDIR = ${BUILDDIR}/runtimes
 OPENMP_BUILDDIR = ${BUILDDIR}/openmp
+LIBOMPTARGET_BUILDDIR = ${BUILDDIR}/libomptarget
 # RESDIR requires trailing '/'.
 LLVM_VERSION_MAJOR = $(shell grep 'set.*LLVM_VERSION_MAJOR  *' ${SRCDIR}/llvm/CMakeLists.txt | sed -e 's/.*LLVM_VERSION_MAJOR //' -e 's/[^0-9][^0-9]*//')
 LLVM_VERSION_MINOR = $(shell grep 'set.*LLVM_VERSION_MINOR  *' ${SRCDIR}/llvm/CMakeLists.txt | sed -e 's/.*LLVM_VERSION_MINOR //' -e 's/[^0-9][^0-9]*//')
@@ -145,6 +146,14 @@ openmp:
 
 check-openmp: openmp
 	cd openmp && ${NINJA} -j${COMPILE_THREADS} check-openmp
+
+libomptarget:
+	mkdir -p ${LIBOMPTARGET_BUILDDIR}
+	cd ${LIBOMPTARGET_BUILDDIR} && CMAKE=${CMAKE} DEST=${DEST} \
+	    RESDIR=${RESDIR} BUILD_TYPE=${BUILD_TYPE} OPTFLAGS="${OPTFLAGS}" \
+	    TARGET=${VE_TRIPLE} SRCDIR=${SRCDIR} TOOLDIR=${TOOLDIR} \
+	    ${LLVM_DEV_DIR}/scripts/cmake-libomptarget.sh
+	cd ${LIBOMPTARGET_BUILDDIR} && ${NINJA} -j${COMPILE_THREADS} install
 
 shallow:
 	REPO=${REPO} BRANCH=${BRANCH} SRCDIR=${SRCDIR} \
