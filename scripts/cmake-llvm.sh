@@ -13,6 +13,7 @@ $CMAKE -G Ninja \
   -DCMAKE_INSTALL_PREFIX=$DEST \
   -DLLVM_ENABLE_TERMINFO=OFF \
   -DLLVM_ENABLE_ZLIB=OFF \
+  -DLLVM_ENABLE_ZSTD=OFF \
   $SRCDIR/llvm
 
 # Disable TERMINFO and ZLIB since those are enabled by default and cause
