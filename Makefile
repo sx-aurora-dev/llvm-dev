@@ -27,9 +27,7 @@ OPENMP_BUILDDIR = ${BUILDDIR}/openmp
 LIBOMPTARGET_BUILDDIR = ${BUILDDIR}/libomptarget
 # RESDIR requires trailing '/'.
 LLVM_VERSION_MAJOR = $(shell grep 'set.*LLVM_VERSION_MAJOR  *' ${SRCDIR}/llvm/CMakeLists.txt | sed -e 's/.*LLVM_VERSION_MAJOR //' -e 's/[^0-9][^0-9]*//')
-LLVM_VERSION_MINOR = $(shell grep 'set.*LLVM_VERSION_MINOR  *' ${SRCDIR}/llvm/CMakeLists.txt | sed -e 's/.*LLVM_VERSION_MINOR //' -e 's/[^0-9][^0-9]*//')
-LLVM_VERSION_PATCH = $(shell grep 'set.*LLVM_VERSION_PATCH  *' ${SRCDIR}/llvm/CMakeLists.txt | sed -e 's/.*LLVM_VERSION_PATCH //' -e 's/[^0-9][^0-9]*//')
-RESDIR = ${DEST}/lib/clang/${LLVM_VERSION_MAJOR}.${LLVM_VERSION_MINOR}.${LLVM_VERSION_PATCH}/
+RESDIR = ${DEST}/lib/clang/${LLVM_VERSION_MAJOR}/
 LIBSUFFIX = /linux/ve/
 #CSUDIR = ${RESDIR}lib/linux/ve
 OPTFLAGS = -O3
